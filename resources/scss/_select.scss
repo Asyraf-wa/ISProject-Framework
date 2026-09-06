@@ -1,0 +1,150 @@
+// =============================================================================
+// Searchable dropdowns — Tom Select, themed to match our form controls
+//
+// Chosen over Select2 (needs jQuery, which this project does not carry) and the
+// rest because it ships a Bootstrap 5 SCSS theme: that theme compiles against
+// Bootstrap's own variables, so ours are what it uses.
+//
+// Two things worth knowing before editing this file.
+//
+// First, Tom Select copies the original <select>'s classes onto its wrapper, so
+// .ts-wrapper is itself a .form-select and inherits Bootstrap's border, radius,
+// padding and caret. The border lives on the wrapper; .ts-control inside it has
+// none. Styling the control is how you write a rule that does nothing.
+//
+// Second, several of our control variables hold CSS custom properties so they
+// can change with data-bs-theme — $input-border-color is
+// var(--is-control-border), not a colour. Sass cannot do colour arithmetic on
+// those and the theme performs some, so every variable it does maths with is
+// pinned to a concrete value below.
+// =============================================================================
+
+// Pinned before the import so the theme's own !default lines never run their
+// colour functions against a var().
+$select-color-dropdown-border-top: $gray-200;
+$select-color-item: $gray-100;
+$select-color-item-text: $gray-800;
+$select-color-item-border: $gray-300;
+
+// Our inputs are flat; the theme's inset shadow reads as a different control
+// sitting among the others.
+$enable-shadows: false;
+
+@import "tom-select/dist/scss/tom-select.bootstrap5";
+
+// -----------------------------------------------------------------------------
+// The closed control
+// -----------------------------------------------------------------------------
+
+// Bootstrap's grid gives the column its width; the control must not insist on
+// its own or a two-column form row breaks at narrow widths.
+.ts-wrapper {
+    min-width: 0;
+}
+
+// The focus ring is Bootstrap's, so a keyboard user sees on this control
+// exactly what they see on every other field.
+.ts-wrapper.focus {
+    border-color: $input-focus-border-color;
+    box-shadow: $input-btn-focus-box-shadow;
+}
+
+.ts-control,
+.ts-control input {
+    color: var(--bs-body-color);
+    background: transparent;
+}
+
+.ts-control input::placeholder {
+    color: var(--bs-secondary-color);
+}
+
+.ts-wrapper.disabled {
+    background: var(--bs-secondary-bg);
+    opacity: 1;
+}
+
+// -----------------------------------------------------------------------------
+// The menu
+// -----------------------------------------------------------------------------
+.ts-dropdown {
+    background: var(--bs-body-bg);
+    border-color: var(--is-control-border);
+    color: var(--bs-body-color);
+    border-radius: $dropdown-border-radius;
+    box-shadow: $dropdown-box-shadow;
+    margin-block-start: 0.125rem;
+
+    // Above the topbar, for the same reason Bootstrap's own dropdowns are: a
+    // menu that opens behind the header is worse than no menu. The script also
+    // parents it to <body> so no overflow ancestor can clip it.
+    z-index: $zindex-dropdown;
+}
+
+.ts-dropdown .option {
+    color: var(--bs-body-color);
+    padding: 0.375rem 0.75rem;
+}
+
+// The option under the cursor or the arrow keys. --is-accent-text, not
+// --bs-primary: the flat brand indigo on a dark ground measures 2.41:1, which
+// fails WCAG 1.4.3 the same way the checkboxes did before they were fixed.
+.ts-dropdown .active {
+    background: rgba(var(--bs-primary-rgb), 0.14);
+    color: var(--is-accent-text);
+}
+
+.ts-dropdown .selected {
+    font-weight: 600;
+}
+
+.ts-dropdown .no-results,
+.ts-dropdown .optgroup-header {
+    color: var(--bs-secondary-color);
+    padding: 0.375rem 0.75rem;
+}
+
+// The matched part of an option. The theme's default is a strong yellow that
+// does not survive a dark ground.
+.ts-dropdown .highlight {
+    background: rgba(var(--bs-warning-rgb), 0.3);
+    color: inherit;
+    border-radius: 0.125rem;
+    padding: 0;
+}
+
+// -----------------------------------------------------------------------------
+// Multi-select chips
+// -----------------------------------------------------------------------------
+.ts-wrapper.multi .ts-control > .item {
+    background: rgba(var(--bs-primary-rgb), 0.14);
+    color: var(--is-accent-text);
+    border: 0;
+    border-radius: $border-radius-sm;
+    padding: 0.125rem 0.375rem;
+}
+
+.ts-wrapper.multi .ts-control > .item .remove {
+    border-inline-start-color: rgba(var(--bs-primary-rgb), 0.3);
+    padding: 0 0.3125rem;
+
+    &:hover {
+        background: rgba(var(--bs-primary-rgb), 0.22);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Dark mode
+//
+// Only what the tokens above do not already carry: the theme hard-codes a few
+// light values that would otherwise survive the switch.
+// -----------------------------------------------------------------------------
+[data-bs-theme="dark"] {
+    .ts-dropdown {
+        background: var(--is-control-bg);
+    }
+
+    .ts-dropdown .create {
+        color: var(--bs-secondary-color);
+    }
+}

@@ -1,0 +1,25 @@
+{{--
+    Guidance shown beside the create and edit forms.
+
+    This is generated once from the table's own shape — required columns, length
+    limits, unique keys, enum values and foreign keys — and then it is yours.
+    Rewrite it in your own words; it is only regenerated with --force.
+--}}
+<div class="card is-guide">
+    <div class="card-header">
+        <h3 class="is-guide-title">
+            <x-isproject::icon name="info" /> Filling in this form
+        </h3>
+    </div>
+
+    <div class="card-body">
+        <p class="is-guide-intro">
+            Fields marked <span class="is-required-mark">*</span> must be filled in
+            before the %%titleSingular%% can be saved. If anything is rejected, the
+            reasons are listed at the top of the form and what you typed is kept —
+            you never have to start over.
+        </p>
+%%guideRequired%%
+%%guideNotes%%
+    </div>
+</div>

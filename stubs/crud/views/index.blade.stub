@@ -1,0 +1,127 @@
+@extends('%%layout%%')
+
+@section('title', '%%title%%')
+
+@section('content')
+    <div class="is-page-header">
+        <div>
+            <span class="is-page-eyebrow">Manage</span>
+            <h2 class="is-page-title">%%title%%</h2>
+        </div>
+
+        <div class="d-flex gap-2">
+            @if (Route::has('%%routeName%%.archived'))
+                <a href="{{ route('%%routeName%%.archived') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                    <x-isproject::icon name="inbox" /> Archive
+                </a>
+            @endif
+
+            @if (Route::has('%%routeName%%.report'))
+                <a href="{{ route('%%routeName%%.report') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                    <x-isproject::icon name="list" /> Report
+                </a>
+            @endif
+
+            <a href="{{ route('%%routeName%%.create') }}" class="btn btn-primary d-inline-flex align-items-center gap-2">
+                <x-isproject::icon name="plus" /> New %%titleSingular%%
+            </a>
+        </div>
+    </div>
+
+    @include('isproject::partials.alerts')
+
+    <div class="card">
+        <div class="card-header is-list-toolbar">
+            {{-- The search keeps whatever sort and page size are in force, so
+                 refining a search does not silently reset the view. --}}
+            <form method="GET" action="{{ route('%%routeName%%.index') }}" class="row g-2 flex-grow-1">
+                @foreach (request()->only(['sort', 'direction', 'per_page']) as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+
+                <div class="col-sm-7 col-md-5 col-lg-4">
+                    <input type="search" name="search" class="form-control" value="{{ request('search') }}"
+                           placeholder="Search %%title%%…" aria-label="Search %%title%%">
+                </div>
+                <div class="col-auto d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                    @if (request()->filled('search'))
+                        <a href="{{ route('%%routeName%%.index') }}" class="btn btn-link text-body-secondary">Reset</a>
+                    @endif
+                </div>
+            </form>
+
+            <x-isproject::per-page :total="$%%modelVariablePlural%%->total()" />
+        </div>
+
+        @if ($%%modelVariablePlural%%->isEmpty())
+            <div class="is-empty">
+                <div class="is-empty-icon"><x-isproject::icon name="inbox" size="22" /></div>
+                <p class="mb-1 fw-medium">No %%title%% found</p>
+                <p class="mb-3 small">
+                    @if (request()->filled('search'))
+                        Nothing matches “{{ request('search') }}”.
+                    @else
+                        Get started by creating the first one.
+                    @endif
+                </p>
+                <a href="{{ route('%%routeName%%.create') }}" class="btn btn-sm btn-primary">New %%titleSingular%%</a>
+            </div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+%%indexHeaders%%
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($%%modelVariablePlural%% as $%%modelVariable%%)
+                            <tr>
+%%indexCells%%
+                                <td class="text-end">
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-sm btn-icon btn-outline-secondary border-0"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                aria-label="Actions for this %%titleSingular%%">
+                                            <x-isproject::icon name="dots" />
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a class="dropdown-item" href="{{ route('%%routeName%%.show', $%%modelVariable%%) }}">
+                                                <x-isproject::icon name="eye" /> View
+                                            </a>
+                                            <a class="dropdown-item" href="{{ route('%%routeName%%.edit', $%%modelVariable%%) }}">
+                                                <x-isproject::icon name="pencil" /> Edit
+                                            </a>
+                                            <hr class="dropdown-divider">
+%%archiveRowActions%%
+                                            <form method="POST" action="{{ route('%%routeName%%.destroy', $%%modelVariable%%) }}"
+                                                  onsubmit="return confirm('Delete this %%titleSingular%%? This cannot be undone.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <x-isproject::icon name="trash" /> Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
+        @if ($%%modelVariablePlural%%->hasPages())
+            <div class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <small class="text-body-secondary">
+                    Showing {{ $%%modelVariablePlural%%->firstItem() }}–{{ $%%modelVariablePlural%%->lastItem() }}
+                    of {{ $%%modelVariablePlural%%->total() }}
+                </small>
+                {{ $%%modelVariablePlural%%->links() }}
+            </div>
+        @endif
+    </div>
+@endsection

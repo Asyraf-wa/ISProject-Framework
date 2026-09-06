@@ -1,0 +1,44 @@
+<?php
+
+namespace %%policyNamespace%%;
+
+use %%modelNamespace%%\%%model%%;
+use App\Models\User;
+
+/**
+ * Generated with permissive defaults so the CRUD screens work immediately.
+ * Tighten these before the module goes anywhere near real data — this is the
+ * one generated file you are expected to edit by hand.
+ */
+class %%model%%Policy
+{
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
+    public function view(User $user, %%model%% $%%modelVariable%%): bool
+    {
+        return true;
+    }
+
+    public function create(User $user): bool
+    {
+        return true;
+    }
+
+    public function update(User $user, %%model%% $%%modelVariable%%): bool
+    {
+        return true;
+    }
+
+    public function delete(User $user, %%model%% $%%modelVariable%%): bool
+    {
+        return true;
+    }
+
+    public function restore(User $user, %%model%% $%%modelVariable%%): bool
+    {
+        return true;
+    }%%archivePolicyMethods%%
+}

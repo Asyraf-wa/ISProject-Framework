@@ -1,0 +1,4 @@
+{{-- Shared fields for the create and edit forms. Edit this file once and both screens follow. --}}
+<div class="row">
+%%formFields%%
+</div>

@@ -1,0 +1,35 @@
+# Shell scripts must keep LF endings or they will not run inside the container.
+*.sh text eol=lf
+art  text eol=lf
+
+*.php   text eol=lf
+*.stub  text eol=lf
+*.blade.php text eol=lf
+*.yml   text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.conf  text eol=lf
+
+art.ps1 text eol=crlf
+
+# Keep the repository slim when installed as a Composer dependency. None of
+# this is needed to run the package — only to develop it.
+/playground     export-ignore
+/tests          export-ignore
+/docker         export-ignore
+/.github        export-ignore
+docker-compose.yml export-ignore
+.env.example    export-ignore
+art             export-ignore
+art.ps1         export-ignore
+.editorconfig   export-ignore
+.gitattributes  export-ignore
+.gitignore      export-ignore
+phpunit.xml     export-ignore
+pint.json       export-ignore
+package.json    export-ignore
+package-lock.json export-ignore
+
+# resources/scss and resources/js are NOT export-ignored on purpose: they are
+# the source of resources/dist, and somebody forking this to restyle it needs
+# them. They are a few tens of kilobytes.

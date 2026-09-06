@@ -1,0 +1,29 @@
+<?php
+
+namespace %%modelNamespace%%;
+
+%%modelImports%%
+
+class %%model%% extends Model
+{
+    use HasFactory%%softDeletesTrait%%%%archivableTrait%%%%auditableTrait%%;
+
+    protected $table = '%%table%%';
+
+    protected $primaryKey = '%%primaryKey%%';
+%%timestamps%%
+    /**
+     * Columns that may be mass assigned. Generated from the table schema —
+     * anything listed in config('isproject.ignored_columns') is left out.
+     */
+    protected $fillable = [
+%%fillable%%
+    ];
+
+    protected function casts(): array
+    {
+        return [
+%%casts%%
+        ];
+    }
+%%relations%%}

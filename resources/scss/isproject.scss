@@ -1,0 +1,29 @@
+// =============================================================================
+// isproject/framework — application stylesheet
+//
+// Build:  npm install && npm run build
+// Output: resources/dist/isproject.css (committed, so no build step is needed
+//         to run the framework — only to change it)
+//
+// Bootstrap 5 (MIT) supplies the grid, components and dark-mode plumbing.
+// Everything above it is ours: see _tokens.scss for the knobs worth turning.
+// =============================================================================
+
+// 1. Bootstrap's functions, so our tokens can call tint-color() and friends.
+@import "bootstrap/scss/functions";
+
+// 2. Our tokens — these win, because Bootstrap declares its own with !default.
+@import "tokens";
+
+// 3. Bootstrap itself, compiled with our values baked in.
+@import "bootstrap/scss/bootstrap";
+
+// 4. Our layer, which may now use Bootstrap's maps, mixins and breakpoints.
+@import "layout";
+@import "components";
+
+// 5. Tom Select, themed with the variables set above. After components so our
+//    control tokens exist, before dark so dark still has the last word.
+@import "select";
+
+@import "dark";

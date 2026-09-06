@@ -1,0 +1,98 @@
+@extends('%%layout%%')
+
+@section('title', '%%title%% archive')
+
+@section('content')
+    <div class="is-page-header">
+        <div>
+            <span class="is-page-eyebrow">
+                <a href="{{ route('%%routeName%%.index') }}">%%title%%</a>
+            </span>
+            <h2 class="is-page-title">Archive</h2>
+        </div>
+
+        <a href="{{ route('%%routeName%%.index') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+            <x-isproject::icon name="arrow-left" /> Back to list
+        </a>
+    </div>
+
+    @include('isproject::partials.alerts')
+
+    <div class="card">
+        <div class="card-header">
+%%archiveTabs%%
+            <form method="GET" action="{{ route('%%routeName%%.archived') }}" class="d-flex gap-2 mt-2">
+                <input type="hidden" name="state" value="{{ $state }}">
+                @foreach (request()->only(['sort', 'direction', 'per_page']) as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+                <input type="search" class="form-control" name="search" value="{{ request('search') }}"
+                       placeholder="Search the archive" aria-label="Search the archive">
+                <button type="submit" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                    <x-isproject::icon name="search" /> Search
+                </button>
+                @if (request('search'))
+                    <a href="{{ route('%%routeName%%.archived', ['state' => $state]) }}"
+                       class="btn btn-link text-body-secondary">Clear</a>
+                @endif
+            </form>
+        </div>
+
+        @if ($rows->isEmpty())
+            <div class="is-empty">
+                <p class="mb-2">Nothing {{ $state }}.</p>
+                <p class="is-empty-icon">
+                    Records you archive from the list screen appear here, and can be put back.
+                </p>
+            </div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+%%indexHeaders%%
+                            <th>{{ $state === 'deleted' ? 'Deleted' : 'Archived' }}</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($rows as $%%modelVariable%%)
+                            <tr>
+%%indexCells%%
+                                <td class="text-nowrap">
+                                    @php
+                                        $when = $state === 'deleted' ? $%%modelVariable%%->deleted_at : $%%modelVariable%%->archived_at;
+                                    @endphp
+                                    <div>{{ $when?->format('d M Y, H:i') }}</div>
+                                    <div class="small text-body-secondary">{{ $when?->diffForHumans() }}</div>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        <form method="POST" action="{{ route('%%routeName%%.restore', $%%modelVariable%%->getKey()) }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary">Restore</button>
+                                        </form>
+
+                                        @if ($state === 'deleted' && Route::has('%%routeName%%.purge'))
+                                            <form method="POST"
+                                                  action="{{ route('%%routeName%%.purge', $%%modelVariable%%->getKey()) }}"
+                                                  onsubmit="return confirm('Delete this %%titleSingular%% permanently? This cannot be undone.')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete for good</button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            @if ($rows->hasPages())
+                <div class="card-body">{{ $rows->links() }}</div>
+            @endif
+        @endif
+    </div>
+@endsection

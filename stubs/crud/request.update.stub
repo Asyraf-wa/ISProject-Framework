@@ -1,0 +1,38 @@
+<?php
+
+namespace %%requestNamespace%%;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
+
+class Update%%model%%Request extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return Gate::allows('update', $this->route('%%routeParameter%%'));
+    }
+
+    /**
+     * Same rules as the store request, except unique checks ignore the record
+     * currently being edited.
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    public function rules(): array
+    {
+        return [
+%%rulesUpdate%%
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+%%attributeLabels%%
+        ];
+    }
+}

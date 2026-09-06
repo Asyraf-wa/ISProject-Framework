@@ -1,0 +1,74 @@
+{
+    "name": "isproject/framework",
+    "description": "A Laravel teaching framework for Information Systems: CRUD scaffolding generated from your database schema, with RBAC, an audit trail, settings, an in-app manual and a self-hosted design system.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "scaffolding",
+        "crud",
+        "generator",
+        "teaching",
+        "education",
+        "admin-panel",
+        "rbac",
+        "audit-trail"
+    ],
+    "authors": [
+        {
+            "name": "Asyraf Wahi Anuar",
+            "email": "asyraf.wahianuar@gmail.com",
+            "role": "Author"
+        }
+    ],
+    "homepage": "https://github.com/Asyraf-wa/ISProject-Framework",
+    "support": {
+        "issues": "https://github.com/Asyraf-wa/ISProject-Framework/issues",
+        "source": "https://github.com/Asyraf-wa/ISProject-Framework"
+    },
+    "require": {
+        "php": "^8.3",
+        "illuminate/console": "^12.0|^13.0",
+        "illuminate/database": "^12.0|^13.0",
+        "illuminate/filesystem": "^12.0|^13.0",
+        "illuminate/support": "^12.0|^13.0",
+        "league/commonmark": "^2.7"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.30",
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpunit/phpunit": "^11.0|^12.0|^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "IsProject\\Framework\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IsProject\\Framework\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "IsProject\\Framework\\IsProjectServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "lint": "pint",
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

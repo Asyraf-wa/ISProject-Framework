@@ -1,0 +1,46 @@
+@extends('%%layout%%')
+
+@section('title', 'New %%titleSingular%%')
+
+@section('content')
+    <div class="is-page-header">
+        <div>
+            <span class="is-page-eyebrow">
+                <a href="{{ route('%%routeName%%.index') }}">%%title%%</a>
+            </span>
+            <h2 class="is-page-title">New %%titleSingular%%</h2>
+        </div>
+
+        <a href="{{ route('%%routeName%%.index') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+            <x-isproject::icon name="arrow-left" /> Back to list
+        </a>
+    </div>
+
+    {{-- Form and guidance side by side on wide screens; guidance drops below on narrow ones. --}}
+    <div class="row g-4 is-form-layout">
+        <div class="col-12 col-xl-8">
+            <div class="card">
+                <div class="card-body">
+                    @include('isproject::partials.errors')
+
+                    <form method="POST" action="{{ route('%%routeName%%.store') }}">
+                        @csrf
+
+                        @include('%%viewFolder%%._form')
+
+                        <div class="d-flex gap-2 mt-2">
+                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-2">
+                                <x-isproject::icon name="save" /> Save
+                            </button>
+                            <a href="{{ route('%%routeName%%.index') }}" class="btn btn-link text-body-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            @include('%%viewFolder%%._guide')
+        </div>
+    </div>
+@endsection

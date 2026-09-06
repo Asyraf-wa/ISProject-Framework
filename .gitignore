@@ -1,0 +1,34 @@
+# The throwaway Laravel app used to exercise the package. It is a full Laravel
+# install with its own vendor/, .env and database — none of it belongs here.
+/playground
+
+# Dependencies, both ecosystems.
+/vendor
+/node_modules
+
+# Configures docker compose only; .env.example is committed in its place.
+/.env
+
+# composer.lock is deliberately absent: this is a library, so the application
+# installing it resolves its own versions. package-lock.json IS committed —
+# it pins the asset toolchain, which is what makes resources/dist reproducible.
+composer.lock
+
+# resources/dist is deliberately NOT ignored. The compiled CSS and JS are
+# committed so the package runs without anybody installing npm.
+
+# Test and tooling output.
+/build
+/coverage
+.phpunit.result.cache
+.phpunit.cache
+.pint.cache
+*.log
+
+# Editors and operating systems.
+.idea
+.vscode
+.fleet
+*.swp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,9 @@
+
+    public function archive(%%model%% $%%modelVariable%%): RedirectResponse
+    {
+        Gate::authorize('archive', $%%modelVariable%%);
+
+        $%%modelVariable%%->archive();
+
+        return back()->with('success', '%%titleSingular%% archived.');
+    }

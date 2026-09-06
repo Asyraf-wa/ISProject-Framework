@@ -1,0 +1,23 @@
+
+    /**
+     * Records that are put away rather than in the ordinary list: archived, in
+     * the trash, or both, depending on what this table supports.
+     */
+    public function archived(Request $request): View
+    {
+        Gate::authorize('viewAny', %%model%%::class);
+
+        $state = in_array($request->query('state'), [%%archiveStates%%], true)
+            ? $request->query('state')
+            : '%%archiveDefaultState%%';
+
+        $query = %%archiveScope%%%%searchScope%%;
+
+        $this->applySort($query, $request, '%%primaryKey%%');
+
+        $rows = $query
+            ->paginate($this->perPage($request))
+            ->withQueryString();
+
+        return view('%%viewFolder%%.archived', compact('rows', 'state'));
+    }

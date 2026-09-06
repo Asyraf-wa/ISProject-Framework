@@ -1,0 +1,17 @@
+
+    /**
+     * Delete for good.
+     *
+     * Only ever finds a record that is already in the trash, so destroying
+     * something always takes two deliberate steps.
+     */
+    public function purge(string $%%modelVariable%%): RedirectResponse
+    {
+        $%%modelVariable%% = %%model%%::onlyTrashed()->findOrFail($%%modelVariable%%);
+
+        Gate::authorize('purge', $%%modelVariable%%);
+
+        $%%modelVariable%%->forceDelete();
+
+        return back()->with('success', '%%titleSingular%% permanently deleted.');
+    }

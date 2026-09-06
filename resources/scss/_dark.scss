@@ -1,0 +1,60 @@
+// =============================================================================
+// Dark mode
+//
+// Bootstrap 5.3 handles its own components through [data-bs-theme="dark"].
+// This file only retunes the surfaces we invented — the shell, the sidebar and
+// the panel colours — so the two halves read as one design.
+// =============================================================================
+
+[data-bs-theme="dark"] {
+    --bs-body-bg: #{$is-slate-950};
+    --bs-body-color: #{$is-slate-300};
+    --bs-emphasis-color: #{$is-slate-50};
+    --bs-secondary-color: #{$is-slate-400};
+    --bs-border-color: #1e2a3d;
+    --bs-tertiary-bg: #{$is-slate-800};
+
+    // Raise panels off the page instead of relying on shadow, which barely
+    // reads on a dark ground.
+    .card,
+    .is-sidebar,
+    .is-topbar {
+        background-color: $is-slate-900;
+    }
+
+    .is-topbar {
+        background-color: color-mix(in srgb, #{$is-slate-900} 85%, transparent);
+    }
+
+    .card {
+        border-color: var(--bs-border-color);
+        box-shadow: none;
+    }
+
+    .table thead th {
+        background: rgba($is-slate-800, 0.6);
+    }
+
+    .is-empty-icon,
+    .is-avatar {
+        background: rgba($is-slate-700, 0.6);
+    }
+
+    .is-backdrop {
+        background: rgba(#000, 0.65);
+    }
+
+    // The sidebar's own colours — including the collapsed flyout — come from
+    // the --is-nav-* tokens at the top of _layout.scss, not from here.
+
+    .is-guest {
+        background:
+            radial-gradient(1200px 600px at 50% -10%, rgba(var(--bs-primary-rgb), 0.18), transparent 60%),
+            var(--bs-body-bg);
+    }
+}
+
+// The browser paints form controls and scrollbars from this hint.
+[data-bs-theme="dark"] {
+    color-scheme: dark;
+}

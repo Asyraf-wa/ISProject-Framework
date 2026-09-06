@@ -1,0 +1,433 @@
+// =============================================================================
+// Application shell: sidebar, topbar, content area
+//
+// State lives on the <html> element so the inline boot script in the layout can
+// restore it before first paint — no flash of an expanded sidebar on reload.
+//
+//   <html data-is-sidebar="expanded|collapsed" data-bs-theme="light|dark">
+//
+// On small screens the sidebar becomes an off-canvas drawer, toggled by the
+// .is-sidebar-open class on <body>.
+// =============================================================================
+
+// Bootstrap's tint-color() keeps fractional channels, which interpolate into a
+// custom property as rgb(59.45%, 57.07%, 88.56%). Valid, but unreadable in the
+// compiled file — round it so the output stays inspectable.
+@function is-tint($color, $weight) {
+    $tinted: tint-color($color, $weight);
+
+    @return rgb(round(red($tinted)), round(green($tinted)), round(blue($tinted)));
+}
+
+// -----------------------------------------------------------------------------
+// Shell tokens
+//
+// The sidebar cannot use --bs-primary directly: Bootstrap keeps that value
+// identical in both themes, and #4338ca on the dark panel measures about
+// 2.3:1 — far below the 4.5:1 WCAG AA minimum for body text. Dark mode gets a
+// tint of the brand colour instead, which reads at roughly 6.5:1 while still
+// looking like the same indigo.
+// -----------------------------------------------------------------------------
+:root {
+    // Form controls. slate-500 measures 4.37:1 against the light card and
+    // 3.75:1 against the dark one, so a single value clears the 3:1 WCAG
+    // minimum for a control boundary in both themes — worth more than a
+    // slightly softer outline that nobody can find.
+    --is-control-border: #{$is-slate-500};
+
+    // The interior of a checkbox. White here, because the card and the page
+    // share a colour: without this the box has no fill of its own to be seen
+    // against, and the border is doing all the work on its own.
+    --is-control-bg: #fff;
+
+    // Brand indigo reads at 7.3:1 on the light card, and carries a white tick
+    // at 7.9:1. Nothing to soften here.
+    --is-control-checked: #{$primary};
+
+    // Brand indigo used as *text* — card titles, avatar initials, the icon
+    // chips, link hovers. On the light card that is the plain brand colour at
+    // 6-7.3:1; see the dark block for why it cannot stay that on a dark one.
+    --is-accent-text: #{$primary};
+
+    --is-nav-color: #{$is-slate-700};
+    --is-nav-hover-bg: #{$is-slate-100};
+    --is-nav-hover-color: #{$is-slate-900};
+    --is-nav-active-color: #{$primary};
+    --is-nav-active-bg: #{rgba($primary, 0.1)};
+    --is-nav-flyout-bg: #{$is-slate-900};
+    --is-nav-flyout-color: #{$is-slate-50};
+}
+
+[data-bs-theme="dark"] {
+    // Same border colour in both themes; the dark panel is dark enough that
+    // slate-500 reads against it too. The fill drops to the page colour so a
+    // checkbox looks inset into the card rather than painted on top.
+    --is-control-border: #{$is-slate-500};
+    --is-control-bg: #{$is-slate-950};
+
+    // A 25% tint, not the 45% the sidebar uses: it has to hold a white tick as
+    // well as stand off the panel, and lightening it further would win the
+    // first at the cost of the second.
+    --is-control-checked: #{is-tint($primary, 25%)};
+
+    // The same 45% tint the sidebar uses for its current item, and for the same
+    // reason: brand indigo as text on a dark panel measures 1.8-2.3:1, which is
+    // barely legible and nowhere near the 4.5:1 body text needs. It is not a
+    // shade problem — the hue is simply too dark to sit on slate-900.
+    --is-accent-text: #{is-tint($primary, 45%)};
+
+    --is-nav-color: #{$is-slate-300};
+    --is-nav-hover-bg: #{rgba($is-slate-700, 0.55)};
+    --is-nav-hover-color: #{$is-slate-50};
+    --is-nav-active-color: #{is-tint($primary, 45%)};
+    --is-nav-active-bg: #{rgba(is-tint($primary, 45%), 0.16)};
+    --is-nav-flyout-bg: #{$is-slate-700};
+    --is-nav-flyout-color: #{$is-slate-50};
+}
+
+.is-layout {
+    min-height: 100vh;
+}
+
+// -----------------------------------------------------------------------------
+// Sidebar
+// -----------------------------------------------------------------------------
+.is-sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 1045;
+    display: flex;
+    flex-direction: column;
+    width: $is-sidebar-width;
+    background: var(--bs-body-bg);
+    border-inline-end: 1px solid var(--bs-border-color);
+    transition: width $is-transition, transform $is-transition;
+    overflow: hidden;
+
+    // Off-canvas below the lg breakpoint.
+    @include media-breakpoint-down(lg) {
+        transform: translateX(-100%);
+        box-shadow: $box-shadow-lg;
+    }
+}
+
+body.is-sidebar-open .is-sidebar {
+    @include media-breakpoint-down(lg) {
+        transform: translateX(0);
+    }
+}
+
+// Dim the page behind the drawer.
+.is-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1040;
+    background: rgba($is-slate-900, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $is-transition, visibility $is-transition;
+}
+
+body.is-sidebar-open .is-backdrop {
+    @include media-breakpoint-down(lg) {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Brand
+// -----------------------------------------------------------------------------
+.is-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: $is-topbar-height;
+    padding-inline: 1.25rem;
+    flex: 0 0 auto;
+    text-decoration: none;
+    color: var(--bs-emphasis-color);
+    white-space: nowrap;
+}
+
+.is-brand-mark {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: $border-radius-sm;
+    background: var(--bs-primary);
+    color: #fff;
+}
+
+.is-brand-text {
+    font-weight: 650;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// -----------------------------------------------------------------------------
+// Navigation
+// -----------------------------------------------------------------------------
+.is-nav {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.5rem 0.75rem 1.5rem;
+    margin: 0;
+    list-style: none;
+
+    // A restrained scrollbar; the default one is loud against the panel.
+    scrollbar-width: thin;
+    scrollbar-color: var(--bs-border-color) transparent;
+}
+
+.is-nav-heading {
+    padding: 1.25rem 0.75rem 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bs-secondary-color);
+    white-space: nowrap;
+}
+
+.is-nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.5625rem 0.75rem;
+    margin-bottom: 0.125rem;
+    border: 0;
+    border-radius: $border-radius-sm;
+    background: transparent;
+    color: var(--is-nav-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: start;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 120ms linear, color 120ms linear;
+
+    &:hover,
+    &:focus-visible {
+        background: var(--is-nav-hover-bg);
+        color: var(--is-nav-hover-color);
+    }
+
+    &.active {
+        background: var(--is-nav-active-bg);
+        color: var(--is-nav-active-color);
+        font-weight: 600;
+    }
+}
+
+.is-nav-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    opacity: 0.85;
+
+    .is-nav-link.active & {
+        opacity: 1;
+    }
+}
+
+.is-nav-text {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.is-nav-caret {
+    flex: 0 0 auto;
+    transition: transform $is-transition;
+
+    .is-nav-link[aria-expanded="true"] & {
+        transform: rotate(90deg);
+    }
+}
+
+// Nested items line up under the parent's label, not its icon.
+.is-nav-sub {
+    list-style: none;
+    padding: 0.125rem 0 0.25rem 2.1rem;
+    margin: 0;
+
+    .is-nav-link {
+        font-weight: 450;
+        font-size: 0.84375rem;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Sidebar footer
+// -----------------------------------------------------------------------------
+.is-sidebar-footer {
+    flex: 0 0 auto;
+    padding: 0.75rem;
+    border-block-start: 1px solid var(--bs-border-color);
+    white-space: nowrap;
+}
+
+// -----------------------------------------------------------------------------
+// Collapsed state (large screens only)
+// -----------------------------------------------------------------------------
+@include media-breakpoint-up(lg) {
+    .is-sidebar {
+        transform: none;
+    }
+
+    .is-main {
+        margin-inline-start: $is-sidebar-width;
+        transition: margin $is-transition;
+    }
+
+    [data-is-sidebar="collapsed"] {
+        .is-sidebar {
+            width: $is-sidebar-width-collapsed;
+        }
+
+        .is-main {
+            margin-inline-start: $is-sidebar-width-collapsed;
+        }
+
+        .is-brand {
+            padding-inline: 1.25rem;
+        }
+
+        .is-brand-text,
+        .is-nav-text,
+        .is-nav-caret,
+        .is-nav-heading,
+        .is-sidebar-footer .is-nav-text {
+            display: none;
+        }
+
+        .is-nav {
+            padding-inline: 0.75rem;
+        }
+
+        .is-nav-link {
+            justify-content: center;
+            padding-inline: 0.5rem;
+        }
+
+        // Sub-menus cannot be reached while collapsed; flatten them away.
+        .is-nav-sub {
+            display: none;
+        }
+
+        // Reveal the label as a flyout so collapsed icons stay identifiable.
+        .is-nav-item > .is-nav-link {
+            &::after {
+                content: attr(data-label);
+                position: absolute;
+                inset-inline-start: calc(100% + 0.5rem);
+                padding: 0.375rem 0.625rem;
+                border-radius: $border-radius-sm;
+                background: var(--is-nav-flyout-bg);
+                color: var(--is-nav-flyout-color);
+                font-size: 0.8125rem;
+                font-weight: 500;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: opacity 120ms linear;
+                z-index: 10;
+            }
+
+            &:hover::after,
+            &:focus-visible::after {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Topbar
+// -----------------------------------------------------------------------------
+.is-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0; // lets wide tables scroll instead of stretching the layout
+}
+
+.is-topbar {
+    position: sticky;
+    top: 0;
+    // Bootstrap's $zindex-sticky. Deliberately below $zindex-dropdown so an
+    // actions menu in a table row paints over the topbar, not behind it —
+    // see the stacking order note in _tokens.scss.
+    z-index: 1020;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: $is-topbar-height;
+    padding-inline: 1rem;
+    background: color-mix(in srgb, var(--bs-body-bg) 85%, transparent);
+    backdrop-filter: blur(8px);
+    border-block-end: 1px solid var(--bs-border-color);
+
+    @include media-breakpoint-up(md) {
+        padding-inline: 1.5rem;
+    }
+}
+
+.is-topbar-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Square icon-only button used across the topbar and table rows.
+.btn-icon {
+    --bs-btn-padding-x: 0;
+    --bs-btn-padding-y: 0;
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
+}
+
+.is-content {
+    flex: 1 1 auto;
+    padding: 1.25rem 1rem 2.5rem;
+
+    @include media-breakpoint-up(md) {
+        padding: 1.75rem 1.5rem 3rem;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Guest shell (login, register, password reset)
+// -----------------------------------------------------------------------------
+.is-guest {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 1.5rem;
+    background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(var(--bs-primary-rgb), 0.12), transparent 60%),
+        var(--bs-body-bg);
+}
+
+.is-guest-card {
+    width: 100%;
+    max-width: 26rem;
+}

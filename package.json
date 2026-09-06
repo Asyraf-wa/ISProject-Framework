@@ -1,0 +1,17 @@
+{
+    "name": "isproject-framework",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Asset build for isproject/framework. Only needed to change the design system — resources/dist is committed, so the package runs without npm.",
+    "scripts": {
+        "build": "npm run build:css && npm run build:js",
+        "build:css": "sass --load-path=node_modules --style=compressed --no-source-map --quiet-deps --silence-deprecation=import,global-builtin,color-functions resources/scss/isproject.scss resources/dist/isproject.css",
+        "build:js": "cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js resources/dist/bootstrap.bundle.min.js && cp node_modules/tom-select/dist/js/tom-select.complete.min.js resources/dist/tom-select.min.js && cp node_modules/tom-select/LICENSE resources/dist/tom-select.LICENSE.txt && cp resources/js/isproject.js resources/dist/isproject.js",
+        "watch": "sass --load-path=node_modules --no-source-map --quiet-deps --silence-deprecation=import,global-builtin,color-functions --watch resources/scss/isproject.scss resources/dist/isproject.css"
+    },
+    "devDependencies": {
+        "bootstrap": "^5.3.8",
+        "sass": "^1.104.0",
+        "tom-select": "^2.6.2"
+    }
+}

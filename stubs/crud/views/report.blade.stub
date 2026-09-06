@@ -1,0 +1,118 @@
+@extends('%%layout%%')
+
+@section('title', '%%title%% report')
+
+@section('content')
+    <div class="is-page-header d-print-none">
+        <div>
+            <span class="is-page-eyebrow">
+                <a href="{{ route('%%routeName%%.index') }}">%%title%%</a>
+            </span>
+            <h2 class="is-page-title">%%title%% report</h2>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}"
+               class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                <x-isproject::icon name="save" /> Export CSV
+            </a>
+            <button type="button" onclick="window.print()"
+                    class="btn btn-primary d-inline-flex align-items-center gap-2">
+                <x-isproject::icon name="list" /> Print
+            </button>
+        </div>
+    </div>
+
+    {{-- Only shown on paper: the screen already has the page header above. --}}
+    <div class="is-print-header d-none d-print-block">
+        <h2>{{ config('app.name') }} — %%title%% report</h2>
+        <p>Generated {{ now()->format('d M Y, H:i') }}{{ $filterSummary ? ' · '.$filterSummary : '' }}</p>
+    </div>
+
+    <div class="card mb-4 d-print-none">
+        <div class="card-body">
+            <form method="GET" action="{{ route('%%routeName%%.report') }}" class="row g-3 align-items-end">
+                <div class="col-sm-6 col-lg-4">
+                    <label class="form-label" for="search">Keyword</label>
+                    <input type="search" id="search" name="search" class="form-control"
+                           value="{{ request('search') }}" placeholder="Search %%title%%…">
+                </div>
+%%reportFilterInputs%%
+                <div class="col-auto d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    @if (request()->hasAny(['search', 'from', 'to'] + array_keys(request()->query())))
+                        <a href="{{ route('%%routeName%%.report') }}" class="btn btn-link text-body-secondary">Reset</a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        @foreach ($summary as $label => $value)
+            <div class="col-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-body-secondary small">{{ $label }}</div>
+                        <div class="fs-4 fw-semibold">{{ $value }}</div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <div class="card">
+        @if ($rows->isEmpty())
+            <div class="is-empty">
+                <div class="is-empty-icon"><x-isproject::icon name="inbox" size="22" /></div>
+                <p class="mb-0 fw-medium">Nothing matches these filters</p>
+            </div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                        <tr>
+%%reportHeaders%%
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($rows as $%%modelVariable%%)
+                            <tr>
+%%reportCells%%
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
+        @if ($rows->hasPages())
+            <div class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2 d-print-none">
+                <small class="text-body-secondary">
+                    Showing {{ $rows->firstItem() }}–{{ $rows->lastItem() }} of {{ $rows->total() }}
+                </small>
+                {{ $rows->links() }}
+            </div>
+        @endif
+    </div>
+@endsection
+
+@push('styles')
+    <style>
+        /* Strip the app shell so the report prints as a plain document. */
+        @media print {
+            .is-sidebar,
+            .is-backdrop,
+            .is-topbar { display: none !important; }
+            .is-main { margin-inline-start: 0 !important; }
+            .is-content { padding: 0 !important; }
+            .card { border: 0 !important; box-shadow: none !important; }
+            .is-print-header { margin-bottom: 1rem; }
+            .is-print-header h2 { font-size: 1.1rem; margin: 0; }
+            .is-print-header p { font-size: .8rem; color: #555; margin: 0; }
+            table { font-size: .75rem; }
+            thead { display: table-header-group; }  /* repeat headers on every page */
+            tr { break-inside: avoid; }
+        }
+    </style>
+@endpush

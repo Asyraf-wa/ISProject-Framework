@@ -1,0 +1,197 @@
+<?php
+
+namespace %%controllerNamespace%%;
+
+use %%modelNamespace%%\%%model%%;
+use %%requestNamespace%%\Store%%model%%Request;
+use %%requestNamespace%%\Update%%model%%Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use IsProject\Framework\Concerns\ListsRecords;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+class %%model%%Controller extends Controller
+{
+    use ListsRecords;
+
+    public function index(Request $request): View
+    {
+        Gate::authorize('viewAny', %%model%%::class);
+
+        $query = %%model%%::query()%%eagerLoad%%%%searchScope%%;
+
+        $this->applySort($query, $request, '%%primaryKey%%');
+
+        $%%modelVariablePlural%% = $query
+            ->paginate($this->perPage($request))
+            ->withQueryString();
+
+        return view('%%viewFolder%%.index', compact('%%modelVariablePlural%%'));
+    }
+
+    /**
+     * Columns this screen may be sorted by.
+     *
+     * A whitelist, not a convenience: an order-by clause is concatenated into
+     * SQL rather than bound, so ?sort= may only pick a name from this list.
+     * Foreign keys sort by the related record's label, so the column orders the
+     * way it reads.
+     *
+     * @return array<string, string|array{0: string, 1: string, 2: string, 3: string}>
+     */
+    protected function sortable(): array
+    {
+        return [
+%%sortable%%
+        ];
+    }
+
+    public function create(): View
+    {
+        Gate::authorize('create', %%model%%::class);
+
+        return view('%%viewFolder%%.create', [
+            '%%modelVariable%%' => new %%model%%,
+        ] + $this->formOptions());
+    }
+
+    public function store(Store%%model%%Request $request): RedirectResponse
+    {
+        $%%modelVariable%% = %%model%%::create($request->validated());
+
+        return redirect()
+            ->route('%%routeName%%.show', $%%modelVariable%%)
+            ->with('success', '%%titleSingular%% created successfully.');
+    }
+
+    public function show(%%model%% $%%modelVariable%%): View
+    {
+        Gate::authorize('view', $%%modelVariable%%);
+
+        return view('%%viewFolder%%.show', compact('%%modelVariable%%'));
+    }
+
+    public function edit(%%model%% $%%modelVariable%%): View
+    {
+        Gate::authorize('update', $%%modelVariable%%);
+
+        return view('%%viewFolder%%.edit', compact('%%modelVariable%%') + $this->formOptions());
+    }
+
+    public function update(Update%%model%%Request $request, %%model%% $%%modelVariable%%): RedirectResponse
+    {
+        $%%modelVariable%%->update($request->validated());
+
+        return redirect()
+            ->route('%%routeName%%.show', $%%modelVariable%%)
+            ->with('success', '%%titleSingular%% updated successfully.');
+    }
+
+    public function destroy(%%model%% $%%modelVariable%%): RedirectResponse
+    {
+        Gate::authorize('delete', $%%modelVariable%%);
+
+        $%%modelVariable%%->delete();
+
+        return redirect()
+            ->route('%%routeName%%.index')
+            ->with('success', '%%titleSingular%% deleted successfully.');
+    }
+
+%%archiveActions%%
+
+    /**
+     * Filterable, printable report. Add ?export=csv to download the same rows
+     * the screen is showing — the filters apply to both.
+     */
+    public function report(Request $request): View|StreamedResponse
+    {
+        Gate::authorize('viewAny', %%model%%::class);
+
+        $query = $this->reportQuery($request);
+
+        if ($request->query('export') === 'csv') {
+            return $this->exportCsv($query);
+        }
+
+        $summary = [
+            'Records' => number_format((clone $query)->count()),
+%%reportSummary%%
+        ];
+
+        return view('%%viewFolder%%.report', [
+            'rows' => $query->paginate(50)->withQueryString(),
+            'summary' => $summary,
+            'filterSummary' => $this->filterSummary($request),
+        ] + $this->formOptions());
+    }
+
+    /**
+     * The report's filtered query. Shared by the screen and the CSV export so
+     * the download can never disagree with what was on screen.
+     */
+    protected function reportQuery(Request $request): Builder
+    {
+        return %%model%%::query()%%eagerLoad%%%%searchScope%%%%reportFilters%%
+            %%defaultOrder%%;
+    }
+
+    /** Streamed so a large export never has to fit in memory. */
+    protected function exportCsv(Builder $query): StreamedResponse
+    {
+        $filename = '%%routeName%%-'.now()->format('Y-m-d-His').'.csv';
+
+        return response()->streamDownload(function () use ($query) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM, so Excel opens UTF-8 accented characters correctly.
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            fputcsv($handle, [%%csvHeaders%%]);
+
+            $query->chunk(500, function ($chunk) use ($handle) {
+                foreach ($chunk as $%%modelVariable%%) {
+                    fputcsv($handle, [%%csvRow%%]);
+                }
+            });
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /** Human-readable description of the active filters, printed on the report. */
+    protected function filterSummary(Request $request): string
+    {
+        $parts = [];
+
+        if ($search = $request->query('search')) {
+            $parts[] = 'matching "'.$search.'"';
+        }
+
+        if ($from = $request->query('from')) {
+            $parts[] = 'from '.$from;
+        }
+
+        if ($to = $request->query('to')) {
+            $parts[] = 'to '.$to;
+        }
+
+        return implode(', ', $parts);
+    }
+
+    /**
+     * Select options shared by the create and edit forms, derived from the
+     * foreign keys found on the %%table%% table.
+     *
+     * @return array<string, mixed>
+     */
+    protected function formOptions(): array
+    {
+        return [
+%%formOptions%%
+        ];
+    }
+}

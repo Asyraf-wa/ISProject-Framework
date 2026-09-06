@@ -1,0 +1,1406 @@
+// =============================================================================
+// Our component layer — the pieces Bootstrap does not ship
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Page header: title, breadcrumb trail and primary action on one row
+// -----------------------------------------------------------------------------
+.is-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.is-page-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+}
+
+.is-page-eyebrow {
+    display: block;
+    margin-bottom: 0.125rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--bs-secondary-color);
+
+    a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover {
+            color: var(--is-accent-text);
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Soft badges — replaces the theme-specific bg-label-* classes
+// -----------------------------------------------------------------------------
+@each $name, $color in $theme-colors {
+    .badge-soft-#{$name} {
+        background-color: rgba($color, 0.12);
+        color: shade-color($color, 15%);
+    }
+
+    [data-bs-theme="dark"] .badge-soft-#{$name} {
+        background-color: rgba($color, 0.2);
+        color: tint-color($color, 45%);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Tables
+// -----------------------------------------------------------------------------
+.table {
+    --bs-table-bg: transparent;
+
+    > :not(caption) > * > * {
+        border-bottom-color: var(--bs-border-color);
+    }
+
+    thead th {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--bs-secondary-color);
+        background: var(--bs-tertiary-bg);
+        border-bottom: 0;
+        white-space: nowrap;
+    }
+
+    // The last row should not draw a rule against the card edge.
+    tbody tr:last-child > * {
+        border-bottom-width: 0;
+    }
+}
+
+// The card owns the rounding, so the table must not paint into the corners.
+.card > .table-responsive:last-child,
+.card > .table:last-child {
+    border-end-start-radius: inherit;
+    border-end-end-radius: inherit;
+    overflow: hidden;
+}
+
+// -----------------------------------------------------------------------------
+// Empty state
+// -----------------------------------------------------------------------------
+.is-empty {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--bs-secondary-color);
+}
+
+.is-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 0.875rem;
+    border-radius: 50%;
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-secondary-color);
+}
+
+// -----------------------------------------------------------------------------
+// Detail list used by generated show screens
+// -----------------------------------------------------------------------------
+.is-detail-list {
+    margin: 0;
+
+    > div {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.125rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--bs-border-color);
+
+        @include media-breakpoint-up(sm) {
+            grid-template-columns: minmax(8rem, 30%) 1fr;
+            gap: 1rem;
+            align-items: baseline;
+        }
+
+        &:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        &:first-child {
+            padding-top: 0;
+        }
+    }
+
+    dt {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--bs-secondary-color);
+    }
+
+    dd {
+        margin: 0;
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Forms
+// -----------------------------------------------------------------------------
+.form-label {
+    color: var(--bs-secondary-color);
+}
+
+.form-control,
+.form-select {
+    &:disabled {
+        color: var(--bs-secondary-color);
+    }
+}
+
+.invalid-feedback {
+    font-size: 0.8125rem;
+}
+
+// -----------------------------------------------------------------------------
+// Alerts — softer than Bootstrap's defaults, with room for an icon
+// -----------------------------------------------------------------------------
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+}
+
+.alert > svg {
+    flex: 0 0 auto;
+    margin-top: 0.125rem;
+}
+
+.alert-heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+// -----------------------------------------------------------------------------
+// Pagination
+// -----------------------------------------------------------------------------
+.pagination {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+}
+
+// -----------------------------------------------------------------------------
+// Form guidance panel
+//
+// The card that sits beside a create or edit form. It is reference material,
+// not the task, so it is quieter than the form: no shadow, a tinted ground, and
+// smaller type. It must never out-shout the fields it explains.
+// -----------------------------------------------------------------------------
+.is-guide {
+    background: var(--bs-tertiary-bg);
+    box-shadow: none;
+
+    // Long forms scroll past the guidance otherwise. Only on screens wide
+    // enough for the two-column layout — below that the card is stacked
+    // underneath the form, where sticky would strand it mid-scroll.
+    @include media-breakpoint-up(xl) {
+        position: sticky;
+        top: calc(#{$is-topbar-height} + 1.5rem);
+    }
+}
+
+.is-guide-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--bs-emphasis-color);
+}
+
+.is-guide-intro {
+    margin-bottom: 0;
+    font-size: 0.84375rem;
+    color: var(--bs-secondary-color);
+}
+
+.is-guide-heading {
+    margin: 1.25rem 0 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bs-secondary-color);
+}
+
+// Required field names, as chips rather than a bulleted list: this is a set to
+// scan, not a sequence to read.
+.is-guide-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    li {
+        padding: 0.2rem 0.5rem;
+        border-radius: $border-radius-sm;
+        background: var(--bs-body-bg);
+        border: 1px solid var(--bs-border-color);
+        font-size: 0.78125rem;
+        font-weight: 500;
+    }
+}
+
+.is-guide-list {
+    margin: 0;
+    font-size: 0.84375rem;
+
+    dt {
+        font-weight: 600;
+        color: var(--bs-emphasis-color);
+    }
+
+    dd {
+        margin-bottom: 0.75rem;
+        color: var(--bs-secondary-color);
+    }
+
+    dd:last-child {
+        margin-bottom: 0;
+    }
+}
+
+// Marks a required label. Uses the danger colour at full opacity so it stays
+// legible in both themes without a second token.
+.is-required-mark {
+    color: var(--bs-danger);
+    font-weight: 700;
+}
+
+// -----------------------------------------------------------------------------
+// Settings screen
+// -----------------------------------------------------------------------------
+
+// An uploaded logo replaces the brand mark and the name. Bounded to the mark's
+// height, and to the width the whole rail can give it once padding is removed
+// (264px sidebar - 2 x 1.25rem) so a wide logo cannot push the name into an
+// ellipsis or overflow the panel.
+.is-brand-logo {
+    flex: 0 0 auto;
+    width: auto;
+    height: 34px;
+    max-width: 214px;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.is-brand-has-logo {
+    .is-brand-mark,
+    .is-brand-text {
+        display: none;
+    }
+}
+
+// Collapsed, there is no room for a wide logo, so the icon mark comes back.
+@include media-breakpoint-up(lg) {
+    [data-is-sidebar="collapsed"] .is-brand-has-logo {
+        .is-brand-logo {
+            display: none;
+        }
+
+        .is-brand-mark {
+            display: grid;
+        }
+    }
+}
+
+// Preview of the file currently saved, above the replace input.
+.is-media-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: $border-radius-sm;
+    background: var(--bs-tertiary-bg);
+
+    img {
+        // A checkerboard behind the image: a white logo on a white card is
+        // otherwise indistinguishable from no logo at all.
+        max-width: 120px;
+        max-height: 48px;
+        object-fit: contain;
+        background-image:
+            linear-gradient(45deg, rgba(127, 127, 127, 0.18) 25%, transparent 25%, transparent 75%, rgba(127, 127, 127, 0.18) 75%),
+            linear-gradient(45deg, rgba(127, 127, 127, 0.18) 25%, transparent 25%, transparent 75%, rgba(127, 127, 127, 0.18) 75%);
+        background-size: 12px 12px;
+        background-position: 0 0, 6px 6px;
+    }
+
+    .form-check {
+        margin-bottom: 0;
+    }
+}
+
+.is-cache-actions {
+    display: flex;
+    flex-direction: column;
+}
+
+.is-cache-action {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.875rem 0;
+    border-block-start: 1px solid var(--bs-border-color);
+
+    .btn {
+        flex: 0 0 auto;
+    }
+}
+
+.is-cache-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--bs-emphasis-color);
+}
+
+.is-cache-help {
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+}
+
+.is-cache-command {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--bs-secondary-color);
+}
+
+// -----------------------------------------------------------------------------
+// Permission matrix
+//
+// Modules down, abilities across. It can be wide, so the module column is
+// pinned while the abilities scroll under it — losing track of which row you
+// are ticking is the one thing that makes a matrix like this unusable.
+// -----------------------------------------------------------------------------
+.is-matrix {
+    th,
+    td {
+        vertical-align: middle;
+    }
+
+    .is-matrix-module {
+        position: sticky;
+        inset-inline-start: 0;
+        z-index: 1;
+        min-width: 230px;
+        background: var(--bs-body-bg);
+        // The pinned column would otherwise show the scrolled cells through it.
+        box-shadow: 1px 0 0 var(--bs-border-color);
+    }
+
+    thead .is-matrix-module {
+        background: var(--bs-tertiary-bg);
+    }
+
+    // Hover shading is painted on the row, which the sticky cell sits above.
+    tbody tr:hover .is-matrix-module {
+        background: var(--bs-tertiary-bg);
+    }
+
+    .is-matrix-cell {
+        width: 1%;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    // Bigger than the 15px default: this is a grid of small squares that people
+    // click a lot, and the extra 3px is the difference between aiming and
+    // hitting. The cell is the real target — see the label rule below.
+    .form-check-input {
+        margin: 0;
+        float: none;
+        width: 1.125rem;
+        height: 1.125rem;
+        cursor: pointer;
+    }
+
+    // Whole-cell hit area, so a slightly-off click still lands.
+    .is-matrix-cell {
+        cursor: pointer;
+    }
+
+    tbody tr:hover .form-check-input:not(:checked):not(:indeterminate) {
+        border-color: var(--is-accent-text);
+    }
+}
+
+// Column heading doubles as a toggle for the whole column.
+.is-matrix-head {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &:hover {
+        color: var(--is-accent-text);
+        text-decoration: underline;
+    }
+}
+
+// The route-name prefix under the module label, for anyone matching this up
+// against their routes file.
+.is-matrix-key {
+    margin-top: 0.125rem;
+    font-size: 0.75rem;
+    color: var(--bs-secondary-color);
+}
+
+// A module with no route for this ability — a gap, not an unticked box.
+.is-matrix-empty {
+    color: var(--bs-border-color);
+}
+
+// -----------------------------------------------------------------------------
+// Authentication
+// -----------------------------------------------------------------------------
+
+// "or" between the password form and the Google button, as a rule with a gap.
+.is-or {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+    color: var(--bs-secondary-color);
+    font-size: 0.8125rem;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1 1 auto;
+        height: 1px;
+        background: var(--bs-border-color);
+    }
+}
+
+// A setting that cannot be switched on until something is added to .env.
+.is-requires {
+    display: flex;
+    align-items: start;
+    gap: 0.375rem;
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--bs-warning-text-emphasis);
+
+    code {
+        color: inherit;
+        font-weight: 600;
+    }
+
+    // The icon should sit on the first line of text, not stretch with it.
+    .is-icon {
+        flex: 0 0 auto;
+        margin-top: 0.2rem;
+    }
+}
+
+.is-linked-account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-block-start: 1px solid var(--bs-border-color);
+
+    &:first-child {
+        border-block-start: 0;
+        padding-block-start: 0;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Audit trail
+// -----------------------------------------------------------------------------
+
+// Before / after values. Colour alone must not carry the meaning — the table
+// has "Before" and "After" headings, and the inline diff has an arrow — so
+// these tints are reinforcement, not the message.
+.is-diff-old {
+    color: var(--bs-danger-text-emphasis);
+    text-decoration: line-through;
+    text-decoration-color: rgba(var(--bs-danger-rgb), 0.4);
+}
+
+.is-diff-new {
+    color: var(--bs-success-text-emphasis);
+}
+
+.is-diff-arrow {
+    margin-inline: 0.25rem;
+    color: var(--bs-secondary-color);
+}
+
+.is-diff-cell {
+    max-width: 22rem;
+    overflow-wrap: anywhere;
+}
+
+.is-diff {
+    margin: 0;
+    font-size: 0.8125rem;
+
+    dt {
+        font-weight: 600;
+        color: var(--bs-emphasis-color);
+    }
+
+    dd {
+        margin-bottom: 0.375rem;
+        overflow-wrap: anywhere;
+    }
+
+    dd:last-child {
+        margin-bottom: 0;
+    }
+}
+
+// History list on a record's own screen.
+.is-timeline {
+    list-style: none;
+    padding: 0 0 0 1rem;
+    margin: 0;
+    border-inline-start: 1px solid var(--bs-border-color);
+}
+
+.is-timeline-item {
+    position: relative;
+    padding-bottom: 1.125rem;
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+
+    // The dot sits on the rule, so it has to come back out by its own radius
+    // plus the list padding.
+    &::before {
+        content: "";
+        position: absolute;
+        inset-inline-start: -1.3125rem;
+        top: 0.3125rem;
+        width: 0.625rem;
+        height: 0.625rem;
+        border-radius: 50%;
+        background: var(--bs-secondary-color);
+    }
+
+    &.is-timeline-created::before {
+        background: var(--bs-success);
+    }
+
+    &.is-timeline-updated::before {
+        background: var(--bs-primary);
+    }
+
+    &.is-timeline-deleted::before {
+        background: var(--bs-danger);
+    }
+
+    &.is-timeline-restored::before {
+        background: var(--bs-warning);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Announcement bar
+//
+// Sits above the sticky topbar so it scrolls away instead of permanently
+// costing every screen a strip of height. Hidden before paint by the boot
+// script when this visitor closed this announcement recently.
+// -----------------------------------------------------------------------------
+[data-is-announcement="hidden"] .is-announcement {
+    display: none;
+}
+
+.is-announcement {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    color: #fff;
+
+    @include media-breakpoint-up(md) {
+        padding-inline: 1.5rem;
+    }
+}
+
+.is-announcement-body {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+a.is-announcement-body:hover {
+    text-decoration: underline;
+}
+
+// A generous target: this is the one control on the bar, and it is small.
+.is-announcement-close {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: $border-radius-sm;
+    background: rgba(#fff, 0.15);
+    color: inherit;
+    font-size: 1.125rem;
+    line-height: 1;
+
+    &:hover,
+    &:focus-visible {
+        background: rgba(#fff, 0.28);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Corner ribbon
+//
+// A 45° banner pinned to the top-right corner. Above the topbar so it is not
+// clipped, but below the sidebar drawer and its scrim, which must cover
+// everything when open.
+// -----------------------------------------------------------------------------
+.is-ribbon {
+    position: fixed;
+    top: 0;
+    inset-inline-end: 0;
+    z-index: 1035;
+    width: 10.5rem;
+    height: 10.5rem;
+    overflow: hidden;
+    pointer-events: none;
+
+    // On a narrow screen this would sit directly on top of the account menu,
+    // and a decorative banner must not cost anyone their way out of the page.
+    display: none;
+
+    @include media-breakpoint-up(md) {
+        display: block;
+    }
+
+    a,
+    span {
+        position: absolute;
+        top: 2rem;
+        inset-inline-end: -2.75rem;
+        width: 13rem;
+        padding: 0.3125rem 0;
+        transform: rotate(45deg);
+        pointer-events: auto;
+
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        box-shadow: $box-shadow;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+}
+
+// The ribbon is fixed and sits above both, so anything in the top-right corner
+// has to move out from under it: the topbar's account menu, and the
+// announcement's close button when the bar is the topmost thing on the page.
+@include media-breakpoint-up(md) {
+    body:has(.is-ribbon) {
+        // 7.5rem, not 5.5: the band is rotated, so its lower-left edge reaches
+        // further into the corner than the visible text suggests. Measured
+        // against the announcement's close button, which is the control that
+        // sits closest to it.
+        .is-topbar,
+        .is-announcement {
+            padding-inline-end: 7.5rem;
+        }
+    }
+}
+
+// Tones for both notices, from the same palette the rest of the UI uses.
+@each $name, $color in $theme-colors {
+    .is-announcement-#{$name} {
+        background: $color;
+    }
+
+    .is-ribbon-#{$name} a,
+    .is-ribbon-#{$name} span {
+        background: $color;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Archive screen
+// -----------------------------------------------------------------------------
+.is-archive-tabs {
+    gap: 0.375rem;
+
+    .nav-link {
+        padding: 0.3125rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--bs-secondary-color);
+    }
+
+    .nav-link:not(.active):hover {
+        background: var(--bs-tertiary-bg);
+        color: var(--bs-emphasis-color);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Footer
+// -----------------------------------------------------------------------------
+.is-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    padding: 1rem 1.5rem;
+    border-block-start: 1px solid var(--bs-border-color);
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+
+    a {
+        color: inherit;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Dropdowns
+// -----------------------------------------------------------------------------
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    border-radius: $border-radius-sm;
+}
+
+.dropdown-menu {
+    padding-inline: 0.375rem;
+}
+
+// A delete form inside a menu must not break the item rhythm.
+.dropdown-menu form {
+    margin: 0;
+}
+
+// -----------------------------------------------------------------------------
+// Theme toggle
+//
+// The button shows the theme you would switch *to*: a moon while light, a sun
+// while dark. Exactly one glyph is ever visible.
+//
+// Both rules live at the same specificity and neither uses a Bootstrap display
+// utility — a .d-flex on either span would be `display: flex !important` and
+// would keep that icon on screen in both themes.
+// -----------------------------------------------------------------------------
+.is-theme-toggle {
+    .is-theme-icon-moon {
+        display: flex;
+    }
+
+    .is-theme-icon-sun {
+        display: none;
+    }
+}
+
+[data-bs-theme="dark"] .is-theme-toggle {
+    .is-theme-icon-moon {
+        display: none;
+    }
+
+    .is-theme-icon-sun {
+        display: flex;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Utilities
+// -----------------------------------------------------------------------------
+.is-avatar {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: rgba(var(--bs-primary-rgb), 0.12);
+    color: var(--is-accent-text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+// Respect a reader's motion preference across every transition we declare.
+@media (prefers-reduced-motion: reduce) {
+    .is-sidebar,
+    .is-main,
+    .is-backdrop,
+    .is-nav-link,
+    .is-nav-caret {
+        transition: none !important;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Remove a generated module
+//
+// Deliberately quiet until opened. This deletes files somebody may have edited,
+// so it should not sit on the card looking like an ordinary button.
+// -----------------------------------------------------------------------------
+.is-remove {
+    margin-top: 1rem;
+    padding-top: 0.875rem;
+    border-block-start: 1px solid var(--bs-border-color);
+
+    summary {
+        cursor: pointer;
+        font-size: 0.8125rem;
+        color: var(--bs-secondary-color);
+    }
+
+    summary:hover {
+        color: var(--bs-danger);
+    }
+}
+
+.is-remove-list {
+    padding-inline-start: 1.125rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.78125rem;
+    color: var(--bs-secondary-color);
+
+    code {
+        color: inherit;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Sortable table headings
+// -----------------------------------------------------------------------------
+.is-sortable {
+    padding: 0;
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: $table-cell-padding-y $table-cell-padding-x;
+        color: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    a:hover {
+        color: var(--is-accent-text);
+    }
+
+    &.text-end a {
+        justify-content: flex-end;
+    }
+}
+
+// Always present, so the heading does not jump sideways when a column is
+// sorted — it only changes from a hint to an answer.
+.is-sort-arrow {
+    font-size: 0.875em;
+    line-height: 1;
+}
+
+.is-sort-idle {
+    opacity: 0;
+    transition: opacity 120ms linear;
+
+    .is-sortable a:hover &,
+    .is-sortable a:focus-visible & {
+        opacity: 0.5;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// List toolbar: search on the left, page size on the right
+// -----------------------------------------------------------------------------
+.is-list-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.is-per-page {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+
+    label {
+        margin: 0;
+    }
+
+    .form-select {
+        width: auto;
+    }
+}
+
+.is-per-page-total {
+    white-space: nowrap;
+}
+
+// -----------------------------------------------------------------------------
+// Profile photos
+// -----------------------------------------------------------------------------
+
+// The photo shares .is-avatar's box so it drops into every place initials
+// already appear — topbar, users list — without those screens changing.
+.is-avatar-img {
+    object-fit: cover;
+    padding: 0;
+    background: var(--bs-tertiary-bg);
+}
+
+.is-avatar-lg {
+    width: 4.5rem;
+    height: 4.5rem;
+    font-size: 1.25rem;
+    flex: 0 0 auto;
+}
+
+.is-avatar-field {
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+    border-block-end: 1px solid var(--bs-border-color);
+}
+
+// -----------------------------------------------------------------------------
+// Menu management
+// -----------------------------------------------------------------------------
+
+// Panels the menu form hides for the type that is not selected. Stated
+// explicitly rather than relying on the user-agent rule, which a display
+// utility on the same element would otherwise win against.
+[hidden] {
+    display: none !important;
+}
+
+.is-menu-tree,
+.is-menu-children {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+// An empty sub-list still needs to be a target, or there would be nowhere to
+// drop the first sub-item. It stays invisible until it holds something, so the
+// tree is not fenced with dashed stubs nobody asked for.
+//
+// :has() rather than :empty — Blade leaves whitespace text nodes inside the
+// list, which :empty counts, and :has() also tracks rows as they are dragged in
+// and out.
+.is-menu-children {
+    margin-inline-start: 2.25rem;
+    min-height: 0.5rem;
+    border-inline-start: 2px dashed transparent;
+    padding-inline-start: 0.75rem;
+}
+
+.is-menu-children:has(.is-menu-row) {
+    border-inline-start-color: var(--bs-border-color);
+    padding-block: 0.125rem;
+}
+
+// While a row is in the air, show every place it could land.
+.is-menu-tree:has(.is-menu-dragging) .is-menu-children {
+    min-height: 1.75rem;
+    border-inline-start-color: rgba(var(--bs-primary-rgb), 0.45);
+}
+
+.is-menu-row {
+    margin-block-end: 0.375rem;
+}
+
+.is-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.5rem;
+    background: var(--bs-body-bg);
+}
+
+.is-menu-item-heading {
+    background: var(--bs-tertiary-bg);
+
+    .is-menu-label > .fw-semibold {
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 0.75rem;
+    }
+}
+
+// Still legible, just clearly not in play: a hidden row is one somebody is
+// coming back to, not one they have thrown away.
+.is-menu-item-off {
+    opacity: 0.6;
+    border-style: dashed;
+}
+
+.is-menu-grip {
+    cursor: grab;
+    color: var(--bs-secondary-color);
+    display: grid;
+    place-items: center;
+    padding: 0.125rem;
+    touch-action: none;
+
+    &:active {
+        cursor: grabbing;
+    }
+}
+
+.is-menu-icon {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    border-radius: 0.375rem;
+    background: rgba(var(--bs-primary-rgb), 0.1);
+    color: var(--is-accent-text);
+}
+
+.is-menu-label {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.is-menu-meta {
+    font-size: 0.75rem;
+    color: var(--bs-secondary-color);
+    overflow-wrap: anywhere;
+}
+
+.is-menu-tags {
+    display: flex;
+    gap: 0.25rem;
+    flex: 0 0 auto;
+}
+
+.is-menu-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    flex: 0 0 auto;
+}
+
+.is-menu-dragging {
+    opacity: 0.45;
+}
+
+.is-menu-status {
+    min-height: 1rem;
+}
+
+@media (max-width: 575.98px) {
+    .is-menu-tags {
+        display: none;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Manual
+// -----------------------------------------------------------------------------
+.is-manual-card {
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+        border-color: var(--is-accent-text);
+        transform: translateY(-1px);
+    }
+}
+
+.is-manual-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-block-end: 0.375rem;
+    color: var(--is-accent-text);
+}
+
+.is-manual-snippet {
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+}
+
+.is-manual-toc {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+
+    a {
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.is-manual-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-start: 1.5rem;
+}
+
+// -----------------------------------------------------------------------------
+// Manual prose
+// -----------------------------------------------------------------------------
+.is-manual-prose {
+    max-width: 68ch;
+    line-height: 1.7;
+
+    > *:first-child {
+        margin-block-start: 0;
+    }
+
+    > *:last-child {
+        margin-block-end: 0;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-block-end: 1rem;
+    }
+
+    h2 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-block: 2rem 0.75rem;
+        padding-block-end: 0.375rem;
+        border-block-end: 1px solid var(--bs-border-color);
+
+        // Anchored headings must not hide under the sticky top bar when the
+        // contents list jumps to them.
+        scroll-margin-top: 5rem;
+    }
+
+    h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-block: 1.5rem 0.5rem;
+    }
+
+    p,
+    ul,
+    ol {
+        margin-block-end: 1rem;
+    }
+
+    li {
+        margin-block-end: 0.375rem;
+    }
+
+    a {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    code {
+        font-size: 0.8125em;
+        padding: 0.125rem 0.3125rem;
+        border-radius: 0.25rem;
+        background: var(--bs-tertiary-bg);
+        color: var(--bs-pink, #d63384);
+    }
+
+    // The block, not the span inside it, owns the scrolling — otherwise a long
+    // command line widens the whole page instead of scrolling in place.
+    pre {
+        overflow-x: auto;
+        padding: 0.875rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--bs-border-color);
+        background: var(--bs-tertiary-bg);
+        margin-block-end: 1rem;
+
+        code {
+            padding: 0;
+            background: none;
+            color: inherit;
+            font-size: 0.8125rem;
+        }
+    }
+
+    table {
+        width: 100%;
+        margin-block-end: 1rem;
+        font-size: 0.875rem;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 0.5rem 0.625rem;
+        border-block-end: 1px solid var(--bs-border-color);
+        text-align: start;
+        vertical-align: top;
+    }
+
+    th {
+        font-weight: 600;
+        background: var(--bs-tertiary-bg);
+    }
+
+    blockquote {
+        margin: 0 0 1rem;
+        padding-inline-start: 1rem;
+        border-inline-start: 3px solid var(--bs-border-color);
+        color: var(--bs-secondary-color);
+    }
+
+    img {
+        max-width: 100%;
+        border-radius: 0.5rem;
+    }
+}
+
+// A table wide enough to need it scrolls inside its own box rather than pushing
+// the page sideways.
+.is-manual-prose > table {
+    display: block;
+    overflow-x: auto;
+}
+
+.is-callout {
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid;
+    margin-block-end: 1rem;
+
+    > *:last-child {
+        margin-block-end: 0;
+    }
+}
+
+.is-callout-title {
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-block-end: 0.375rem;
+}
+
+@each $kind, $tone in (note: info, tip: success, warning: warning, important: danger) {
+    .is-callout-#{$kind} {
+        border-color: rgba(var(--bs-#{$tone}-rgb), 0.35);
+        background: rgba(var(--bs-#{$tone}-rgb), 0.08);
+
+        .is-callout-title {
+            color: var(--bs-#{$tone}-text-emphasis);
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Colour setting: a swatch and the hex beside it, kept in step by the field
+// -----------------------------------------------------------------------------
+.is-color-field {
+    display: flex;
+    gap: 0.5rem;
+
+    .form-control-color {
+        flex: 0 0 3rem;
+        padding: 0.25rem;
+    }
+
+    .form-control[type=text] {
+        font-family: var(--bs-font-monospace);
+        max-width: 9rem;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Progressive web app readiness list
+// -----------------------------------------------------------------------------
+.is-pwa-checks {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.84375rem;
+}
+
+.is-pwa-check {
+    position: relative;
+    padding-inline-start: 1.375rem;
+    margin-block-end: 0.375rem;
+
+    // A cross for what is missing, a tick for what is done: the list is worth
+    // reading to the end, not just counting.
+    &::before {
+        content: 00d7;
+        position: absolute;
+        inset-inline-start: 0;
+        font-weight: 700;
+    }
+}
+
+.is-pwa-check-ok::before {
+    content: 2713;
+    opacity: 0.65;
+}

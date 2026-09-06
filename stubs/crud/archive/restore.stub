@@ -1,0 +1,17 @@
+
+    /**
+     * Put a record back into the ordinary list.
+     *
+     * Not type-hinted as %%model%%: route model binding applies the model's
+     * scopes, and this is reached precisely for records those scopes hide.
+     */
+    public function restore(string $%%modelVariable%%): RedirectResponse
+    {
+        $%%modelVariable%% = %%model%%::query()%%restoreScopes%%->findOrFail($%%modelVariable%%);
+
+        Gate::authorize('restore', $%%modelVariable%%);
+
+%%restoreBody%%
+
+        return back()->with('success', '%%titleSingular%% restored.');
+    }
