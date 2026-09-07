@@ -62,18 +62,29 @@ class Theme
         return array_map(fn (array $preset) => $preset[1], self::PRESETS);
     }
 
-    /** Swatches for the settings screen. @return array<int, array<string, mixed>> */
+    /**
+     * Swatches for the settings screen.
+     *
+     * Each carries both treatments — the accent and the tint the dark theme
+     * uses — so the chip can show what the choice looks like in either, rather
+     * than showing the light value and leaving the other half to be imagined.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public static function swatches(): array
     {
+        $theme = new self;
         $swatches = [];
 
         foreach (self::PRESETS as $key => [$hex, $label, $light, $dark]) {
             $swatches[] = [
                 'key' => $key,
                 'hex' => $hex,
+                'tint' => $theme->tint($hex, 0.45),
                 'label' => $label,
                 'light' => $light,
                 'dark' => $dark,
+                'default' => $key === self::DEFAULT,
             ];
         }
 
@@ -201,7 +212,7 @@ class Theme
     }
 
     /** Mix toward white, the way Bootstrap's tint-color() does. */
-    private function tint(string $hex, float $amount): string
+    public function tint(string $hex, float $amount): string
     {
         return $this->mix($hex, 255, $amount);
     }
