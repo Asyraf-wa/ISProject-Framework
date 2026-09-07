@@ -89,11 +89,11 @@ class SeoTest extends TestCase
     #[Test]
     public function the_description_reaches_both_the_meta_tag_and_the_preview(): void
     {
-        $this->set(['seo_description' => 'The Information Systems student portal.']);
+        $this->set(['seo_description' => 'The Information Systems developer portal.']);
 
         $this->get('/login')
             ->assertOk()
-            ->assertSee('name="description" content="The Information Systems student portal."', false)
+            ->assertSee('name="description" content="The Information Systems developer portal."', false)
             ->assertSee('property="og:description"', false)
             ->assertSee('name="twitter:description"', false);
     }

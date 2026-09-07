@@ -111,7 +111,7 @@ class CrudMakeCommandTest extends TestCase
         $form = file_get_contents($this->generated('views/products/_form.blade.php'));
         $guide = file_get_contents($this->generated('views/products/_guide.blade.php'));
 
-        // The panel tells students to look for the asterisk, so the two counts
+        // The panel tells developers to look for the asterisk, so the two counts
         // have to agree — a chip with no matching asterisk is a lie.
         $this->assertSame(
             substr_count($form, 'is-required-mark'),

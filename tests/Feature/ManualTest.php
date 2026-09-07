@@ -64,7 +64,7 @@ class ManualTest extends TestCase
             $this->assertNotSame('', trim($rendered['html']));
 
             // An unresolved %%token%% on screen is a typo nobody would spot
-            // until a student read it.
+            // until a developer read it.
             $this->assertDoesNotMatchRegularExpression('/%%[a-zA-Z]+%%/', $rendered['html']);
         }
     }
@@ -334,8 +334,8 @@ class ManualTest extends TestCase
     private function user(): ManualTestUser
     {
         return ManualTestUser::query()->create([
-            'name' => 'Student',
-            'email' => 'student@example.test',
+            'name' => 'Developer',
+            'email' => 'developer@example.test',
             'password' => 'hashed',
         ]);
     }

@@ -47,7 +47,7 @@ class MenuTest extends TestCase
     #[Test]
     public function it_skips_entries_whose_route_does_not_exist_yet(): void
     {
-        // A menu may name a module before the student has generated it.
+        // A menu may name a module before the developer has generated it.
         $this->assertSame([], $this->menu([
             ['label' => 'Invoices', 'route' => 'invoices.index'],
         ]));
