@@ -9,6 +9,20 @@ Packagist reads versions from git tags, so every release below has a matching
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-09-07
+
+**Upgrading from 0.1.0 is `composer update` plus `migrate`.** The renames under
+*Changed* are all in this repository's own development environment — the
+sandbox directory, the artisan wrapper, the seeded demo account. None of them
+exist in an installed package, so nothing in your application has to move.
+
+Two steps are worth taking after updating:
+
+```bash
+php artisan migrate                                        # the activity log table
+php artisan vendor:publish --tag=isproject-assets --force  # the new CSS and JS
+```
+
 ### Added
 
 - **Activity log** at `/activity` — sign-ins, failed sign-ins, lockouts and
@@ -120,5 +134,6 @@ before upgrading.
 - Everything shipped is permissively licensed; see the licence section of the
   README.
 
-[Unreleased]: https://github.com/Asyraf-wa/ISProject-Framework/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Asyraf-wa/ISProject-Framework/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Asyraf-wa/ISProject-Framework/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Asyraf-wa/ISProject-Framework/releases/tag/v0.1.0
