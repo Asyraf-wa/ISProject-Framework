@@ -234,8 +234,8 @@ fi
 echo "==> Ensuring a demo login exists"
 php artisan tinker --execute="
     \App\Models\User::updateOrCreate(
-        ['email' => 'lecturer@example.test'],
-        ['name' => 'Lecturer', 'password' => bcrypt('password')]
+        ['email' => 'admin@example.test'],
+        ['name' => 'Administrator', 'password' => bcrypt('password')]
     );
 "
 
@@ -251,7 +251,7 @@ if ! grep -q 'HasRoles' app/Models/User.php; then
 fi
 
 echo "==> Scanning routes into the permission matrix"
-php artisan isproject:permissions --admin=Administrator --user=lecturer@example.test 2>&1 | tail -4
+php artisan isproject:permissions --admin=Administrator --user=admin@example.test 2>&1 | tail -4
 
 php artisan optimize:clear
 
@@ -260,7 +260,7 @@ cat <<'DONE'
   Ready.
 
     URL       http://localhost:8080
-    Login     lecturer@example.test / password  (Administrator, full access)
+    Login     admin@example.test / password  (Administrator, full access)
     Mailpit   http://localhost:8025
 
   Generate more CRUD with:

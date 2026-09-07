@@ -9,6 +9,36 @@ Packagist reads versions from git tags, so every release below has a matching
 
 ## [Unreleased]
 
+### Added
+
+- **Activity log** at `/activity` — sign-ins, failed sign-ins, lockouts and
+  password changes, fed by Laravel's own authentication events so it also works
+  for applications using Breeze, Fortify or their own login screen. Log your own
+  with `isproject_activity()`. Prune with `isproject:activity-prune`.
+- **Dashboard** at `/dashboard`, charted with self-hosted Apache ECharts, built
+  only from tables this package owns.
+- **`<x-isproject::chart>`** component. The library loads only on pages that use
+  it, and colours come from the stylesheet at draw time so charts follow the
+  light and dark themes.
+- **Split sign-in screen** — a showcase panel beside the form, shared by sign in,
+  register and password reset. Turn it off with `isproject.landing.enabled`.
+
+### Changed
+
+- The development application directory is now `sandbox`, not `playground`, and
+  the wording throughout addresses **developers** rather than students.
+- The seeded administrator is `admin@example.test` (was `lecturer@example.test`).
+  The password is unchanged.
+- `art` and `docker/bin/init-sandbox.sh` are now executable. They were committed
+  without the bit, so the documented `./art` command failed on a fresh clone.
+
+### Fixed
+
+- Brand indigo used as text measured 1.8–2.4:1 on dark panels — below the 4.5:1
+  WCAG minimum — on the manual cards, avatar initials, menu icons and the
+  searchable-dropdown highlight. All now use a theme-aware accent token and
+  measure 5.0–6.4:1. Light mode is unchanged.
+
 ## [0.1.0] — 2026-09-06
 
 First public release.

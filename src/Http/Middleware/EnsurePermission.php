@@ -52,7 +52,7 @@ class EnsurePermission
         }
 
         // A route the matrix has never heard of — added since the last sync.
-        // Default is to let it through: a student who adds a route and forgets
+        // Default is to let it through: a developer who adds a route and forgets
         // to press "Rescan" should not get a 403 they have no way to diagnose,
         // and the roles screen shows a standing warning listing exactly these.
         // Set access.unknown_routes to 'deny' to close it instead.

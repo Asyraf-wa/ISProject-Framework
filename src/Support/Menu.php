@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
  * the sidebar can render: resolved URLs, active state and permission filtering.
  *
  * An entry whose route does not exist yet is dropped rather than throwing, so a
- * menu can name a module before the student has generated it.
+ * menu can name a module before the developer has generated it.
  *
  * The definition comes from MenuManager, which reads the menu items table when
  * one has been curated and config('isproject.menu') when it has not. This class

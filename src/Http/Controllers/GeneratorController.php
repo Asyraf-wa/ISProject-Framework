@@ -15,7 +15,7 @@ use IsProject\Framework\Support\SchemaInspector;
 
 /**
  * Web front end for `isproject:crud` — lists the database tables and generates
- * a module from a button, for students who are not comfortable at the terminal.
+ * a module from a button, for developers who are not comfortable at the terminal.
  *
  * This writes PHP files into the application, so the route is registered only
  * when config('isproject.generator') allows it — local environment by default.
@@ -23,7 +23,7 @@ use IsProject\Framework\Support\SchemaInspector;
  */
 class GeneratorController extends Controller
 {
-    /** Targets a student may tick, in the order they are shown. */
+    /** Targets a developer may tick, in the order they are shown. */
     private const TARGETS = [
         'model' => 'Model',
         'controller' => 'Controller',

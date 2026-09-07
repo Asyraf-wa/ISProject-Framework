@@ -216,8 +216,8 @@ class SeoTest extends TestCase
     private function user(): SeoTestUser
     {
         return SeoTestUser::query()->create([
-            'name' => 'Lecturer',
-            'email' => 'lecturer@example.test',
+            'name' => 'Administrator',
+            'email' => 'admin@example.test',
             'password' => 'hashed',
         ]);
     }

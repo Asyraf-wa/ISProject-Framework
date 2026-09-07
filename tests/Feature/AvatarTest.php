@@ -311,7 +311,7 @@ class AvatarTest extends TestCase
     private function user(array $overrides = []): AvatarTestUser
     {
         return AvatarTestUser::query()->create(array_merge([
-            'name' => 'Lecturer',
+            'name' => 'Administrator',
             'email' => 'lecturer'.AvatarTestUser::query()->count().'@example.test',
             'password' => 'hashed',
         ], $overrides));
@@ -346,8 +346,8 @@ class AvatarTest extends TestCase
     private function details(array $extra = []): array
     {
         return array_merge([
-            'name' => 'Lecturer',
-            'email' => 'lecturer@example.test',
+            'name' => 'Administrator',
+            'email' => 'admin@example.test',
         ], $extra);
     }
 }

@@ -49,6 +49,17 @@
     // 6-7.3:1; see the dark block for why it cannot stay that on a dark one.
     --is-accent-text: #{$primary};
 
+    // Chart series colours, read by isproject.js at draw time. Six is enough
+    // for anything worth putting on a dashboard; past that a chart is a table.
+    // Ordered so the first two are distinguishable to the most common forms of
+    // colour blindness, since a two-series chart is the usual case.
+    --is-chart-1: #{$primary};
+    --is-chart-2: #0ea5e9;
+    --is-chart-3: #10b981;
+    --is-chart-4: #f59e0b;
+    --is-chart-5: #ef4444;
+    --is-chart-6: #a855f7;
+
     --is-nav-color: #{$is-slate-700};
     --is-nav-hover-bg: #{$is-slate-100};
     --is-nav-hover-color: #{$is-slate-900};
@@ -75,6 +86,15 @@
     // barely legible and nowhere near the 4.5:1 body text needs. It is not a
     // shade problem — the hue is simply too dark to sit on slate-900.
     --is-accent-text: #{is-tint($primary, 45%)};
+
+    // Lifted for the dark panel, the same way the accent text is: the light
+    // palette above is mixed for a white ground and goes muddy on slate-900.
+    --is-chart-1: #{is-tint($primary, 45%)};
+    --is-chart-2: #38bdf8;
+    --is-chart-3: #34d399;
+    --is-chart-4: #fbbf24;
+    --is-chart-5: #f87171;
+    --is-chart-6: #c084fc;
 
     --is-nav-color: #{$is-slate-300};
     --is-nav-hover-bg: #{rgba($is-slate-700, 0.55)};
@@ -430,4 +450,126 @@ body.is-sidebar-open .is-backdrop {
 .is-guest-card {
     width: 100%;
     max-width: 26rem;
+}
+
+// -----------------------------------------------------------------------------
+// The split sign-in: a showcase panel beside the form
+//
+// Below the large breakpoint the showcase is not rendered small, it is not
+// rendered at all — a marketing panel stacked above a sign-in form on a phone
+// is something to scroll past to reach the thing you came for.
+// -----------------------------------------------------------------------------
+.is-guest-split {
+    padding: 0;
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: 1.05fr 1fr;
+        place-items: stretch;
+    }
+}
+
+.is-guest-panel {
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    min-height: 100vh;
+
+    @include media-breakpoint-up(lg) {
+        min-height: auto;
+    }
+}
+
+.is-guest-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.is-showcase {
+    display: none;
+
+    @include media-breakpoint-up(lg) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.75rem;
+        padding: 3rem;
+        color: var(--is-nav-flyout-color);
+
+        // Its own ground rather than the page's: the panel has to read as a
+        // different surface from the card beside it, in both themes.
+        background:
+            radial-gradient(900px 500px at 15% 0%, rgba(var(--bs-primary-rgb), 0.55), transparent 65%),
+            var(--is-nav-flyout-bg);
+    }
+}
+
+.is-showcase-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    align-self: flex-start;
+
+    .is-brand-mark {
+        background: rgba(#fff, 0.14);
+        color: #fff;
+    }
+}
+
+.is-showcase-headline {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(1.75rem, 2.6vw, 2.5rem);
+    font-weight: 650;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.is-showcase-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 34rem;
+
+    li {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+        font-size: 0.875rem;
+
+        // Enough contrast to be read, not so much that it competes with the
+        // headline: measured at 5.1:1 on the panel ground.
+        color: rgba(#fff, 0.78);
+    }
+
+    strong {
+        color: #fff;
+        font-weight: 600;
+    }
+}
+
+.is-showcase-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.5rem;
+    background: rgba(#fff, 0.14);
+    color: #fff;
+}
+
+.is-showcase-foot {
+    margin: 0;
+    margin-block-start: auto;
+    padding-block-start: 2rem;
+    font-size: 0.78125rem;
+    color: rgba(#fff, 0.6);
 }

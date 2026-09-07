@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Unlike the generator, this page is expected to run in production, so it does
  * not hide itself by environment. With no gate configured, the route group's
  * own middleware ("auth" by default) is the only protection — which is fine for
- * a single-author student project and not fine for anything shared. The config
+ * a single-author developer project and not fine for anything shared. The config
  * comment says so, and so does the README.
  */
 class AuthorizeSettings

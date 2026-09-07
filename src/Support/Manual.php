@@ -242,6 +242,8 @@ class Manual
             '%%settingsPath%%' => $path('isproject.settings.path', 'settings'),
             '%%accessPath%%' => $path('isproject.access.path', 'access'),
             '%%auditPath%%' => $path('isproject.audit.path', 'audit'),
+            '%%activityPath%%' => $path('isproject.activity.path', 'activity'),
+            '%%dashboardPath%%' => $path('isproject.dashboard.path', 'dashboard'),
             '%%menuPath%%' => $path('isproject.menu_admin.path', 'menu'),
             '%%manualPath%%' => $path('isproject.manual.path', 'manual'),
         ];

@@ -71,6 +71,7 @@ return [
         ['heading' => 'System'],
         ['label' => 'Users', 'icon' => 'people', 'route' => 'isproject.users.index', 'can' => 'isproject.users.index'],
         ['label' => 'Roles', 'icon' => 'check-circle', 'route' => 'isproject.roles.index', 'can' => 'isproject.roles.index'],
+        ['label' => 'Activity log', 'icon' => 'eye', 'route' => 'isproject.activity.index', 'can' => 'isproject.activity.index'],
         ['label' => 'Audit trail', 'icon' => 'list', 'route' => 'isproject.audit.index', 'can' => 'isproject.audit.index'],
         ['label' => 'Menu', 'icon' => 'menu', 'route' => 'isproject.menu.index', 'can' => 'isproject.menu.index'],
         ['label' => 'Settings', 'icon' => 'settings', 'route' => 'isproject.settings.index', 'can' => 'isproject.settings.index'],
@@ -119,7 +120,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | A page that lists the database tables and generates a module from a
-    | button, for students who are not comfortable at the command line.
+    | button, for developers who are not comfortable at the command line.
     |
     | It writes PHP files into the application, so treat it as a development
     | tool: by default it exists ONLY in the local environment. Setting
@@ -167,7 +168,7 @@ return [
         'disk' => 'public',
         'directory' => 'isproject',
 
-        // Cache buttons offered on the page. Drop any you would rather students
+        // Cache buttons offered on the page. Drop any you would rather developers
         // could not press; 'optimize' clears the lot.
         'cache_actions' => ['cache', 'view', 'config', 'route'],
 
@@ -551,6 +552,100 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Activity log
+    |--------------------------------------------------------------------------
+    |
+    | What people did, as opposed to what changed. Sign-ins, failed sign-ins,
+    | lockouts, password changes. The audit trail below covers data changes;
+    | keeping them apart means neither list buries the other.
+    |
+    | Fed by Laravel's own authentication events, so it keeps working for an
+    | application using Breeze, Fortify or its own login screen. Log your own
+    | with the isproject_activity() helper.
+    |
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | The signed-out screens
+    |--------------------------------------------------------------------------
+    |
+    | Sign in, register and password reset share one layout: a showcase panel
+    | beside the form, so the first page anybody sees reads as the front of a
+    | product rather than a bare login box.
+    |
+    | The headline falls back to the tagline on the settings screen, so most
+    | projects never touch this. Set 'enabled' to false for a plain centred
+    | card instead.
+    |
+    */
+
+    'landing' => [
+        'enabled' => true,
+
+        // Null means "use the tagline from Settings", then the line below it.
+        'headline' => null,
+        'fallback_headline' => 'Everything your team needs, in one place.',
+
+        // Three is the most that reads at a glance. Each takes an icon from the
+        // bundled set; anything else renders as a blank square.
+        'points' => [
+            ['icon' => 'check-circle', 'title' => 'Built for the work', 'text' => 'Records, reports and the people who look after them.'],
+            ['icon' => 'people', 'title' => 'Everyone in their place', 'text' => 'Roles decide what each person can reach.'],
+            ['icon' => 'eye', 'title' => 'Nothing goes unrecorded', 'text' => 'Every change and every sign-in is logged.'],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    |
+    | A starting dashboard at isproject.dashboard, charted with ECharts. It is
+    | built only from tables this package owns — sign-ins, changes, roles — so
+    | it works on every project rather than assuming yours has an orders table.
+    |
+    | Point your menu at it, or leave it alone and build your own; nothing else
+    | in the framework links to it.
+    |
+    */
+
+    'dashboard' => [
+        'path' => 'dashboard',
+        'middleware' => ['web', 'auth'],
+    ],
+
+    'activity' => [
+        'enabled' => env('ISPROJECT_ACTIVITY', true),
+
+        'path' => 'activity',
+        'middleware' => ['web', 'auth'],
+
+        // Silence an event that turns out to be noise in your application,
+        // e.g. 'logout' on a site with a short session lifetime.
+        'ignored_events' => [],
+
+        // Dropped from the properties of any row, whoever passes them. Unlike
+        // the audit trail these are not redacted but removed: an activity row
+        // has no "before" value that would make a masked secret informative.
+        'ignored_properties' => [
+            'password',
+            'password_confirmation',
+            'current_password',
+            'token',
+            '*_token',
+            'secret',
+            '*_secret',
+            'api_key',
+        ],
+
+        // Pruned by `php artisan isproject:activity-prune`. Schedule it, or the
+        // table grows for as long as people keep signing in.
+        'retention_days' => 365,
+    ],
+
     'audit' => [
         'enabled' => env('ISPROJECT_AUDIT', true),
         'generated_models' => true,
@@ -795,7 +890,7 @@ return [
     |
     | Run `php artisan vendor:publish --tag=isproject-stubs` to copy the stubs
     | into the path below; the generator prefers those over the packaged ones,
-    | so students can reshape generated code without forking the package.
+    | so developers can reshape generated code without forking the package.
     |
     */
 

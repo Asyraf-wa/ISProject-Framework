@@ -6,8 +6,8 @@ summary: Putting records out of the way without deleting them, and how it differ
 
 # Archiving
 
-Deleting is rarely what people mean. A finished semester, a discontinued product,
-a graduated student — you want them out of the everyday list, not gone.
+Deleting is rarely what people mean. A closed project, a discontinued product, a
+former member — you want them out of the everyday list, not gone.
 
 That is archiving, and it is opt-in per table.
 

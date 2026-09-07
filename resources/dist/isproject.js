@@ -31,7 +31,7 @@
     //
     // Set on Default rather than per element: Bootstrap builds a Dropdown
     // instance lazily on first click, so every menu picks this up, including
-    // ones students write by hand.
+    // ones developers write by hand.
     if (window.bootstrap && window.bootstrap.Dropdown) {
         window.bootstrap.Dropdown.Default.popperConfig = { strategy: 'fixed' };
         window.bootstrap.Dropdown.Default.boundary = 'viewport';
@@ -437,5 +437,116 @@
         document.querySelectorAll('[data-is-menu-form]').forEach(syncMenuForm);
 
         enhanceSelects();
+        drawCharts();
     });
+
+    // ----------------------------------------------------------------- charts
+
+    var charts = [];
+
+    /**
+     * Colours read from the stylesheet rather than written here, so a chart
+     * follows the theme and any retheming of the design system for free. The
+     * fallbacks matter: this runs before the CSS is guaranteed to have applied
+     * on a very slow connection.
+     */
+    function chartTheme() {
+        var style = getComputedStyle(root);
+        var value = function (name, fallback) {
+            return (style.getPropertyValue(name) || '').trim() || fallback;
+        };
+
+        return {
+            text: value('--bs-body-color', '#1e293b'),
+            muted: value('--bs-secondary-color', '#64748b'),
+            line: value('--bs-border-color', '#e2e8f0'),
+            palette: [
+                value('--is-chart-1', '#4338ca'),
+                value('--is-chart-2', '#0ea5e9'),
+                value('--is-chart-3', '#10b981'),
+                value('--is-chart-4', '#f59e0b'),
+                value('--is-chart-5', '#ef4444'),
+                value('--is-chart-6', '#a855f7'),
+            ],
+        };
+    }
+
+    /** Push the theme into an option object the server had no colours for. */
+    function themed(option, theme) {
+        var merged = JSON.parse(JSON.stringify(option));
+
+        merged.color = merged.color || theme.palette;
+        merged.textStyle = Object.assign({ color: theme.text }, merged.textStyle || {});
+        merged.backgroundColor = 'transparent';
+
+        ['xAxis', 'yAxis'].forEach(function (key) {
+            var axes = merged[key];
+
+            if (!axes) {
+                return;
+            }
+
+            (Array.isArray(axes) ? axes : [axes]).forEach(function (axis) {
+                axis.axisLine = axis.axisLine || {};
+                axis.axisLine.lineStyle = Object.assign({ color: theme.line }, axis.axisLine.lineStyle || {});
+                axis.axisLabel = Object.assign({ color: theme.muted }, axis.axisLabel || {});
+                axis.splitLine = axis.splitLine || {};
+                axis.splitLine.lineStyle = Object.assign({ color: theme.line }, axis.splitLine.lineStyle || {});
+            });
+        });
+
+        if (merged.legend) {
+            merged.legend.textStyle = Object.assign({ color: theme.muted }, merged.legend.textStyle || {});
+        }
+
+        return merged;
+    }
+
+    function drawCharts() {
+        if (typeof echarts === 'undefined') {
+            return;
+        }
+
+        var theme = chartTheme();
+
+        document.querySelectorAll('[data-is-chart]').forEach(function (element) {
+            var option;
+
+            try {
+                option = JSON.parse(element.getAttribute('data-is-chart'));
+            } catch (e) {
+                return;
+            }
+
+            var instance = echarts.getInstanceByDom(element) || echarts.init(element, null, { renderer: 'svg' });
+
+            instance.setOption(themed(option, theme), true);
+            charts.push({ instance: instance, option: option });
+        });
+    }
+
+    // A chart sizes itself once and then keeps that size, so it has to be told.
+    window.addEventListener('resize', function () {
+        charts.forEach(function (chart) {
+            chart.instance.resize();
+        });
+    });
+
+    // Repaint on a theme change: the colours above were read at draw time, and
+    // dark axis labels on a dark panel are the failure this avoids.
+    new MutationObserver(function (records) {
+        var themeChanged = records.some(function (record) {
+            return record.attributeName === 'data-bs-theme';
+        });
+
+        if (!themeChanged || charts.length === 0) {
+            return;
+        }
+
+        var theme = chartTheme();
+
+        charts.forEach(function (chart) {
+            chart.instance.setOption(themed(chart.option, theme), true);
+        });
+    }).observe(root, { attributes: true, attributeFilter: ['data-bs-theme'] });
 })();

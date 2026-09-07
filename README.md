@@ -9,7 +9,7 @@ development: CRUD scaffolding generated from your database schema, on top of a
 first-party design system — responsive sidebar, dark mode, no paid theme and no
 CDN.
 
-Students write a migration, run it, and get a complete working module — model,
+Developers write a migration, run it, and get a complete working module — model,
 controller, form requests, Blade views, factory, policy and routes.
 
 ```bash
@@ -49,7 +49,7 @@ compiled, so the framework runs on a machine that has never seen Node.
 
 ## Why two repositories
 
-| Repository | Composer type | What it is | How students get it |
+| Repository | Composer type | What it is | How developers get it |
 |---|---|---|---|
 | `isproject/framework` | `library` | This repo — generators, stubs, shared views, config | pulled in as a dependency |
 | `isproject/skeleton` | `project` | A pre-wired Laravel app (layout, auth, dashboard) | `laravel new myapp --using=isproject/skeleton` |
@@ -78,7 +78,7 @@ both, which is the quickest way to confirm everything works.
 
 | Service | URL | Notes |
 |---|---|---|
-| Application | http://localhost:8080 | login `lecturer@example.test` / `password` |
+| Application | http://localhost:8080 | login `admin@example.test` / `password` |
 | phpMyAdmin | http://localhost:8081 | signed in automatically — no password to type |
 | Mailpit | http://localhost:8025 | catches all outgoing mail |
 | MySQL | `localhost:3307` | user `isproject`, password `secret` |
@@ -143,7 +143,7 @@ php artisan isproject:crud-all --skip=users --force
 
 ### The generator page
 
-For students who would rather not use the terminal, the same generator has a web
+For developers who would rather not use the terminal, the same generator has a web
 UI at **`/isproject/generator`** (also linked in the sidebar). It lists every
 table on the connection with its shape — columns, row count, relations, whether
 it has soft deletes, which parts are already generated — and a **Generate CRUD**
@@ -164,7 +164,7 @@ button, with checkboxes for what to emit.
 ISPROJECT_GENERATOR=true    # switch it on outside local — never on a shared server
 ```
 
-Existing files are skipped unless "Overwrite my edits" is ticked, so a student
+Existing files are skipped unless "Overwrite my edits" is ticked, so a developer
 cannot lose an afternoon's work by double-clicking the button.
 
 Each generated module also has a **Remove this module** panel, and the same thing
@@ -593,7 +593,7 @@ and refuse the install without saying why.
 ### The manual
 
 **`/manual`**, linked in the sidebar under *Help*. A ten-chapter guide written
-for the student who has just been handed the scaffold — signing in and finding
+for the developer who has just been handed the scaffold — signing in and finding
 their way around, generating their first module, then roles, settings, the menu,
 the audit trail, archiving, going live, and a troubleshooting table.
 
@@ -652,6 +652,79 @@ site, unwise for one holding real coursework.
 > A test walks every cross-reference in every chapter and fails if one points at
 > a chapter that no longer exists, so renaming a chapter cannot quietly leave
 > dead links behind.
+
+### Activity log
+
+**`/activity`**, under *System*. Who signed in, who failed to, who was locked
+out, who changed their password — and from which address.
+
+This is **not** the audit trail. The audit trail answers "who edited this
+invoice"; the activity log answers "who has been trying to get in". Keeping them
+apart means neither list buries the other.
+
+It is fed by **Laravel's own authentication events**, not by this package's
+controllers, so it keeps working for an application using Breeze, Fortify or its
+own login screen — even with `isproject.auth.enabled` set to false.
+
+Log your own alongside them:
+
+```php
+isproject_activity('invoice.exported', 'Exported the March invoices', ['count' => 42]);
+isproject_activity('order.shipped', 'Marked it shipped', [], $order);
+```
+
+| Guard | Why |
+|---|---|
+| A failed sign-in is **not** attributed to the account it targeted | "What has this person done" must not start listing things done *to* them by somebody else. The address tried is kept in properties |
+| Passwords are dropped, not redacted | Unlike a changed field in an audit row, there is no version of a password worth keeping |
+| It never throws | A log that can take down the thing it watches is worse than no log. A missing table must not turn somebody's sign-in into a 500 |
+
+Prune it, or it grows for as long as people keep signing in:
+
+```bash
+php artisan isproject:activity-prune --days=90 --pretend
+Schedule::command('isproject:activity-prune')->daily();
+```
+
+### Dashboard and charts
+
+**`/dashboard`** — sign-ins over the last fortnight, what has been happening,
+which modules changed, and the latest entries. Built **only from tables this
+package owns**, because a starting dashboard that assumes you have an `orders`
+table is one that breaks on every project except the one it was written for.
+
+Charts are [ECharts](https://echarts.apache.org) (Apache-2.0), self-hosted with
+the other assets. Use one anywhere:
+
+```blade
+<x-isproject::chart :option="$option" height="300" />
+```
+
+`$option` is a plain ECharts option array from PHP. Two things the component
+does that matter:
+
+- **The library loads only on pages that have a chart.** It is 664 KB; a page
+  without one should not pay for that. The component pushes the script tag, the
+  layout does not carry it.
+- **Colours are not in your option.** They are read from the stylesheet in the
+  browser at draw time and reapplied when the theme changes, so a chart follows
+  light and dark mode. A palette baked into the PHP would not — it would be dark
+  axis labels on a dark panel, the failure this design avoids.
+
+### The sign-in screen
+
+Sign in, register and password reset share a split layout: a showcase panel
+beside the form, so the first page anybody sees reads as the front of a product
+rather than a bare login box. The headline falls back to the tagline on the
+settings screen, so most projects never touch it.
+
+```php
+'landing' => ['enabled' => false],   // a plain centred card instead
+```
+
+Below the large breakpoint the showcase is not rendered small — it is not
+rendered at all. A marketing panel stacked above a sign-in form on a phone is
+something to scroll past to reach the thing you came for.
 
 ### Menu management
 
@@ -762,7 +835,7 @@ Route::resource('products', ProductController::class)
 
 The middleware matches the current route's **name** against the matrix — which
 is also why only named routes can be permitted. Everything else goes through
-Laravel's own Gate, so nothing here replaces the API students should be learning:
+Laravel's own Gate, so nothing here replaces the API developers should be learning:
 
 ```blade
 @can('products.create') <a href="...">New product</a> @endcan
@@ -909,7 +982,7 @@ missing, rather than saving a logo that renders as a broken image.
 
 ### `isproject:install`
 
-Publishes what a student is meant to edit.
+Publishes what a developer is meant to edit.
 
 ```bash
 php artisan isproject:install          # config + views
@@ -1163,6 +1236,8 @@ maintained packages rather than rebuilding them:
 | Menu management | **done** | `isproject_menu_items` feeding the existing renderer; config is the fallback, drag or arrows to sort |
 | In-app manual | **done** | Markdown chapters shipped with the package, rendered at `/manual`, searchable, overridable per course |
 | Install as an app (PWA) | **done** | Manifest and service worker from settings; disabling serves a self-unregistering worker, and no page is ever cached |
+| Activity log | **done** | own table fed by Laravel auth events; works with Breeze and Fortify too |
+| Dashboard and charts | **done** | ECharts self-hosted, loaded only where a chart exists, themed from the stylesheet |
 | Searchable dropdowns | **done** | Tom Select, self-hosted, themed from our own SCSS tokens; applied by option count so nothing needs marking |
 | Skeleton starter kit | next | `isproject/skeleton`, installed with `laravel new --using=` |
 | Advanced search / filter | | `spatie/laravel-query-builder` + a Livewire index table |
@@ -1188,7 +1263,7 @@ suite never wipes data you have been clicking through in the browser.
 MIT.
 
 Every third-party asset shipped or generated by this package is permissively
-licensed, so the whole thing can be handed to students, forked and redistributed
+licensed, so the whole thing can be handed to developers, forked and redistributed
 without negotiating anyone's terms:
 
 | | Licence |
@@ -1196,12 +1271,14 @@ without negotiating anyone's terms:
 | Bootstrap 5 (compiled into `resources/dist/isproject.css`) | MIT — © The Bootstrap Authors |
 | Bootstrap Icons (SVG paths in `x-isproject::icon`) | MIT — © The Bootstrap Authors |
 | Tom Select (`resources/dist/tom-select.min.js`) | Apache-2.0 — © Tom Select authors |
+| Apache ECharts (`resources/dist/echarts.min.js`) | Apache-2.0 — © The Apache Software Foundation |
 | Laravel | MIT |
 
-Tom Select is the one exception to MIT. It is redistributed unmodified, it keeps
-its licence header in the minified file, and the full Apache-2.0 text ships
-beside it as `resources/dist/tom-select.LICENSE.txt` — which is what that licence
-asks for. Nothing there restricts teaching, forking or redistribution.
+Tom Select and ECharts are the exceptions to MIT. Both are redistributed
+unmodified, both keep their licence headers in the minified files, and the full
+Apache-2.0 text ships beside each as `tom-select.LICENSE.txt` and
+`echarts.LICENSE.txt` — which is what that licence asks for. Nothing in either
+restricts forking or redistribution.
 
 No commercial theme, no CDN, no webfont service. Nothing phones home, and the
 whole UI works on a machine with no internet connection.

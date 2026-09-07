@@ -1404,3 +1404,93 @@ a.is-announcement-body:hover {
     content: 2713;
     opacity: 0.65;
 }
+
+// -----------------------------------------------------------------------------
+// Dashboard
+// -----------------------------------------------------------------------------
+
+// A chart sizes itself from this box, so the box must have a height before the
+// library measures it — an auto-height container renders a chart 0px tall.
+.is-chart {
+    width: 100%;
+    min-height: 8rem;
+}
+
+.is-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.is-stat-icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    border-radius: 0.625rem;
+}
+
+.is-stat-value {
+    font-size: 1.5rem;
+    font-weight: 650;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.is-stat-label {
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+}
+
+.is-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.625rem 1rem;
+        border-block-start: 1px solid var(--bs-border-color);
+        font-size: 0.84375rem;
+    }
+}
+
+.is-timeline-who {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.is-timeline-when {
+    margin-inline-start: auto;
+    flex: 0 0 auto;
+    color: var(--bs-secondary-color);
+    font-size: 0.78125rem;
+}
+
+// Tinted grounds for the stat icons. The foregrounds are the theme-aware
+// emphasis tokens, not the flat brand colours: those measure under 2.5:1 on a
+// dark panel, which is the failure the accent token exists to avoid.
+.is-stat-primary {
+    background: rgba(var(--bs-primary-rgb), 0.12);
+    color: var(--is-accent-text);
+}
+
+.is-stat-warning {
+    background: rgba(var(--bs-warning-rgb), 0.16);
+    color: var(--bs-warning-text-emphasis);
+}
+
+.is-stat-success {
+    background: rgba(var(--bs-success-rgb), 0.16);
+    color: var(--bs-success-text-emphasis);
+}
+
+.is-stat-secondary {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-secondary-color);
+}

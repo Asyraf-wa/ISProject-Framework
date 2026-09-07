@@ -397,8 +397,8 @@ class ProgressiveWebAppTest extends TestCase
     private function user(): PwaTestUser
     {
         return PwaTestUser::query()->create([
-            'name' => 'Lecturer',
-            'email' => 'lecturer@example.test',
+            'name' => 'Administrator',
+            'email' => 'admin@example.test',
             'password' => 'hashed',
         ]);
     }

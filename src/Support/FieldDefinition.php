@@ -131,7 +131,7 @@ class FieldDefinition
 
     /**
      * Plain-English constraints for the guidance panel beside the form — the
-     * same limits the validation rules enforce, said in words a student can act
+     * same limits the validation rules enforce, said in words a developer can act
      * on before submitting.
      *
      * Returns null when the column carries no constraint worth explaining; a

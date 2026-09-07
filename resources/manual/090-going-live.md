@@ -52,8 +52,8 @@ page to find and nothing to guess.
 
 - Delete or rename any demonstration accounts.
 - Make sure at least one real person holds a super admin role.
-- Check that a student-level role really cannot reach the admin screens — sign in
-  as one in a private window and try typing `%%accessPath%%/users` directly.
+- Check that a limited role really cannot reach the admin screens — sign in as
+  one in a private window and try typing `%%accessPath%%/users` directly.
 
 ## Check the uploads work
 

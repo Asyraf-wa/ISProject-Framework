@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
  * Site configuration, one row per setting.
  *
  * Prefixed "isproject_" so it never collides with a settings table of the
- * student's own. Values are stored as plain strings and cast back on read from
+ * developer's own. Values are stored as plain strings and cast back on read from
  * the field definitions in config/isproject.php — the schema lives in one
  * place, so there is no type column to keep in step.
  */

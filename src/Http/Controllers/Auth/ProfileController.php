@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use IsProject\Framework\Models\Activity;
 use IsProject\Framework\Models\SocialAccount;
 use IsProject\Framework\Support\Avatars;
 
@@ -83,6 +84,11 @@ class ProfileController extends Controller
 
         $user->forceFill(['password' => Hash::make($validated['password'])])->save();
 
+        // Deliberately logged: a password changing is exactly the event
+        // somebody reviewing a compromised account needs to find, and it does
+        // not appear in the audit trail because the value is redacted there.
+        isproject_activity(Activity::PASSWORD_CHANGED, 'Changed their own password');
+
         return back()->with('success', 'Password changed.');
     }
 
@@ -95,6 +101,8 @@ class ProfileController extends Controller
             ->firstOrFail();
 
         $link->delete();
+
+        isproject_activity(Activity::GOOGLE_UNLINKED, 'Disconnected a Google account');
 
         return back()->with('success', 'Google account disconnected.');
     }

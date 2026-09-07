@@ -764,7 +764,7 @@ class CrudMakeCommand extends Command
      *
      * A NOT NULL boolean is not one of them: it renders as a switch backed by a
      * hidden input, so a value is always posted and there is nothing for the
-     * student to remember to fill in.
+     * developer to remember to fill in.
      */
     private function marksRequired(FieldDefinition $field): bool
     {
@@ -819,7 +819,7 @@ class CrudMakeCommand extends Command
         $label = e($field->label());
         $required = $field->nullable ? '' : ' required';
 
-        // The guidance panel tells students to look for the asterisk, so the
+        // The guidance panel tells developers to look for the asterisk, so the
         // labels have to carry one. aria-hidden because the input's own
         // "required" attribute already announces this to a screen reader.
         $mark = $this->marksRequired($field)
@@ -1093,7 +1093,7 @@ class CrudMakeCommand extends Command
 
     /**
      * The generator deliberately does not edit config/isproject.php — a config
-     * file is the student's to own. Print the line to paste instead, unless the
+     * file is the developer's to own. Print the line to paste instead, unless the
      * module is already listed.
      */
     private function menuHint(array $r): void
@@ -1119,7 +1119,10 @@ class CrudMakeCommand extends Command
     private function guessMenuIcon(string $model): string
     {
         return match (true) {
-            (bool) preg_match('/user|member|student|staff|people/i', $model) => 'people',
+            // Model names that describe people, so the menu gets the people
+            // icon rather than a generic one. Nothing to do with who uses this
+            // framework — these are table names an application might have.
+            (bool) preg_match('/user|member|student|staff|people|person|employee|customer/i', $model) => 'people',
             (bool) preg_match('/task|todo|job/i', $model) => 'check-circle',
             (bool) preg_match('/setting|config|option/i', $model) => 'settings',
             (bool) preg_match('/categor|type|group|tag/i', $model) => 'list',

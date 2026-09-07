@@ -13,7 +13,7 @@ use Throwable;
  * table is loaded once and cached; writing flushes it. Reads never throw: the
  * layout renders before the first migration has run, during `migrate:fresh`,
  * and on a machine whose cache table is missing, and none of those should be a
- * 500 on the student's screen. When storage is unreachable the configured
+ * 500 on the developer's screen. When storage is unreachable the configured
  * defaults are used, which is exactly what a fresh install should show.
  */
 class Settings

@@ -17,7 +17,7 @@ use IsProject\Framework\Support\Access;
  * Authorisation itself still goes through Laravel's own Gate — $user->can(),
  * the "can" directive in Blade, $this->authorize() in controllers — because the
  * service provider registers a Gate::before hook that consults these roles.
- * Nothing here replaces the API students should be learning.
+ * Nothing here replaces the API developers should be learning.
  */
 trait HasRoles
 {

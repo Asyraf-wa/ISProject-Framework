@@ -40,13 +40,13 @@ puts the reading actions first (List, View, Report) and the changing ones after
 (Add, Create, Edit, Update, Delete), because that is the order you think in when
 deciding what a role should be able to do.
 
-A useful starting set for a class project:
+A useful starting set for most projects:
 
 | Role | Typically holds |
 |---|---|
 | Administrator | Super admin — everything |
 | Staff | List, View, Add, Edit on the data modules |
-| Student | List and View only |
+| Viewer | List and View only |
 
 ## The super admin escape hatch
 

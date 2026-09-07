@@ -115,7 +115,7 @@ class SettingsController extends Controller
 
     /**
      * Run one of the cache commands. The settings cache is always flushed too:
-     * a student pressing "clear cache" means "make the site reflect what I
+     * a developer pressing "clear cache" means "make the site reflect what I
      * changed", and leaving our own entry behind would look like the button
      * did nothing.
      */

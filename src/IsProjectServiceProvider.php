@@ -6,8 +6,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use IsProject\Framework\Console\ActivityPruneCommand;
 use IsProject\Framework\Console\ArchivableCommand;
 use IsProject\Framework\Console\AuditPruneCommand;
 use IsProject\Framework\Console\CrudAllCommand;
@@ -17,7 +19,9 @@ use IsProject\Framework\Console\InstallCommand;
 use IsProject\Framework\Console\PermissionSyncCommand;
 use IsProject\Framework\Http\Middleware\EnsureGeneratorIsEnabled;
 use IsProject\Framework\Http\Middleware\EnsurePermission;
+use IsProject\Framework\Listeners\LogAuthenticationActivity;
 use IsProject\Framework\Support\Access;
+use IsProject\Framework\Support\ActivityLogger;
 use IsProject\Framework\Support\AuditRecorder;
 use IsProject\Framework\Support\AuthOptions;
 use IsProject\Framework\Support\Avatars;
@@ -66,6 +70,11 @@ class IsProjectServiceProvider extends ServiceProvider
         // Scans its directories once and memoises the chapter list.
         $this->app->singleton(Manual::class);
 
+        // A singleton because it holds the "suspend logging" flag: without one
+        // shared instance, withoutLogging() would only silence the copy it was
+        // called on — the same reason the audit recorder is one.
+        $this->app->singleton(ActivityLogger::class);
+
         // Singletons: the shell asks for the site name, logo and favicon
         // several times per request, and both classes cache their work.
         $this->app->singleton(SettingsSchema::class);
@@ -93,7 +102,7 @@ class IsProjectServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom($this->base('database/migrations'));
 
         // <x-isproject::icon />, <x-isproject::nav-item /> — anonymous
-        // components, so there are no PHP classes for students to wade through.
+        // components, so there are no PHP classes for developers to wade through.
         Blade::anonymousComponentNamespace($this->base('resources/views/components'), 'isproject');
 
         // Our stylesheet is Bootstrap-based, so pagination must match.
@@ -117,12 +126,21 @@ class IsProjectServiceProvider extends ServiceProvider
         $this->loadRoutesFrom($this->base('routes/settings.php'));
         $this->loadRoutesFrom($this->base('routes/access.php'));
         $this->loadRoutesFrom($this->base('routes/audit.php'));
+        $this->loadRoutesFrom($this->base('routes/activity.php'));
+        $this->loadRoutesFrom($this->base('routes/dashboard.php'));
         $this->loadRoutesFrom($this->base('routes/menu.php'));
         $this->loadRoutesFrom($this->base('routes/manual.php'));
         $this->loadRoutesFrom($this->base('routes/pwa.php'));
         $this->loadRoutesFrom($this->base('routes/seo.php'));
 
         $this->registerAccessControl();
+
+        // Sign-ins, failed sign-ins and lockouts, taken from Laravel's own auth
+        // events rather than from our controllers — so the log keeps working
+        // for an application that uses Breeze, Fortify or its own login screen.
+        if (config('isproject.activity.enabled', true)) {
+            Event::subscribe(LogAuthenticationActivity::class);
+        }
         $this->applyConfiguredTimezone();
 
         // Registered unconditionally, not only in console: the generator page
@@ -137,6 +155,7 @@ class IsProjectServiceProvider extends ServiceProvider
             PermissionSyncCommand::class,
             AuditPruneCommand::class,
             ArchivableCommand::class,
+            ActivityPruneCommand::class,
         ]);
 
         if ($this->app->runningInConsole()) {
@@ -167,7 +186,7 @@ class IsProjectServiceProvider extends ServiceProvider
     /**
      * Wire RBAC into Laravel's own authorisation rather than beside it.
      *
-     * Everything students already know keeps working — $user->can('products.index'),
+     * Everything developers already know keeps working — $user->can('products.index'),
      * the "can" directive in Blade, $this->authorize() in a controller, and the
      * menu's own 'can' key — because the check happens in a Gate::before hook.
      */
@@ -234,7 +253,7 @@ class IsProjectServiceProvider extends ServiceProvider
     }
 
     /**
-     * Publishing groups students will actually use:
+     * Publishing groups developers will actually use:
      *   --tag=isproject-assets  compiled CSS/JS into public/vendor/isproject
      *   --tag=isproject-config  the config file, including the sidebar menu
      *   --tag=isproject-views   the layout and shared partials

@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
  * migration, not as a side effect of tidying up some PHP files.
  *
  * The files it removes are the ones the generator writes, worked out from the
- * same config paths. Anything a student added of their own accord elsewhere is
+ * same config paths. Anything a developer added of their own accord elsewhere is
  * not touched, and the command says what it did rather than reporting a total.
  */
 class CrudRemoveCommand extends Command

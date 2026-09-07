@@ -11,7 +11,7 @@ namespace IsProject\Framework\Support;
  *   enabled    — someone ticked the box on the settings screen
  *
  * Google sign-in needs both. Keeping the two apart is what lets the settings
- * screen refuse to switch on a button that would send students to a Google
+ * screen refuse to switch on a button that would send developers to a Google
  * error page, and explain why instead.
  */
 class AuthOptions

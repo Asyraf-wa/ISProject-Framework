@@ -70,7 +70,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       # Creates the separate isproject_testing schema on first boot, so the
-      # test suite never wipes the data students have been clicking through.
+      # test suite never wipes the data developers have been clicking through.
       - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${DB_ROOT_PASSWORD:-root}"]

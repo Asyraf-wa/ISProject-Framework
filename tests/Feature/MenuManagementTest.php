@@ -548,8 +548,8 @@ class MenuManagementTest extends TestCase
     private function user(): MenuTestUser
     {
         return MenuTestUser::query()->create([
-            'name' => 'Lecturer',
-            'email' => 'lecturer@example.test',
+            'name' => 'Administrator',
+            'email' => 'admin@example.test',
             'password' => 'hashed',
         ]);
     }
