@@ -208,6 +208,20 @@ return [
                 'icon' => 'grid',
                 'description' => 'Branding and the theme new visitors see first.',
                 'fields' => [
+                    // Rendered as swatches rather than a dropdown, and as a
+                    // fixed set rather than a colour picker: every option here
+                    // is measured to clear 4.5:1 in both themes, which a free
+                    // picker cannot promise.
+                    'accent' => [
+                        'type' => 'swatches',
+                        'label' => 'Accent colour',
+                        'options' => '@accents',
+                        'default' => 'indigo',
+                        'width' => 'col-12',
+                        'rules' => ['nullable', 'string', 'in:indigo,violet,blue,emerald,amber,rose,slate'],
+                        'help' => 'Used for buttons, links, the current menu item, checkboxes and the first chart series.',
+                    ],
+
                     'brand_icon' => [
                         'type' => 'select',
                         'label' => 'Brand icon',

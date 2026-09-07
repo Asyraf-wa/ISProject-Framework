@@ -615,6 +615,54 @@ Schedule::command('isproject:audit-prune')->daily();   // keeps audit.retention_
 php artisan isproject:audit-prune --days=90 --pretend
 ```
 
+### Accent colour
+
+**Settings → Appearance.** Seven presets, shown as swatches with their measured
+contrast, changing the buttons, links, current menu item, checkboxes, focus
+rings and the first chart series.
+
+| | Light | Dark tint | As text, light / dark |
+|---|---|---|---|
+| Indigo *(default)* | `#4338ca` | `#9892e2` | 7.9 / 6.4 |
+| Violet | `#7c3aed` | `#b793f5` | 5.7 / 7.2 |
+| Blue | `#1d4ed8` | `#839eea` | 6.7 / 6.8 |
+| Emerald | `#047857` | `#75b5a3` | 5.5 / 7.5 |
+| Amber | `#b45309` | `#d6a078` | 5.0 / 7.8 |
+| Rose | `#be123c` | `#db7d94` | 6.3 / 6.3 |
+| Slate | `#334155` | `#8f96a2` | 10.4 / 6.0 |
+
+#### Why a fixed set and not a colour picker
+
+Every preset clears 4.5:1 three ways: as text on a light card, as a
+white-labelled button, and as its dark tint on the dark panel. A free picker
+cannot promise that — and the failure is quiet. Cyan is the illustration:
+`#20beff` looks excellent and gives a **2.1:1 primary button**.
+
+A test asserts all three thresholds for every preset, and that the ratios
+printed on the screen are the real ones rather than numbers that drifted.
+
+#### How it is applied
+
+The stylesheet is compiled from Sass, so `$primary` is baked into hundreds of
+declarations and cannot be reassigned at runtime. [Theme](src/Support/Theme.php)
+instead emits a small block of custom property overrides into the page head.
+Three things make that block short:
+
+- Most of the framework's own layer already reads `var(--bs-primary-rgb)` and
+  `var(--is-accent-text)` rather than a literal, so it follows for free.
+- Bootstrap's buttons read their own `--bs-btn-*` properties, so they can be
+  redirected without touching the compiled rules.
+- Only the handful compiled from Sass colour functions — the soft badges, the
+  focus border — need restating.
+
+The dark half uses **tints**, never the flat accent: brand colour as text on a
+dark panel is the failure that has bitten this project four times, and a test
+asserts the dark block does not simply repeat the base value.
+
+**Choosing the default emits nothing at all.** The compiled stylesheet is
+already indigo, so an installation that leaves this alone pays nothing for the
+feature.
+
 ### Searchable dropdowns
 
 Any `<select>` with more than **8 options** becomes one you can type into. The

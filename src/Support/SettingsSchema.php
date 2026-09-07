@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 class SettingsSchema
 {
     /** Field types the settings form can render. */
-    public const TYPES = ['text', 'textarea', 'email', 'url', 'number', 'date', 'select', 'boolean', 'image', 'color'];
+    public const TYPES = ['text', 'textarea', 'email', 'url', 'number', 'date', 'select', 'boolean', 'image', 'color', 'swatches'];
 
     /** @var array<int, array<string, mixed>>|null */
     private ?array $groups = null;
@@ -265,6 +265,7 @@ class SettingsSchema
 
         return match ($options) {
             '@icons' => Icons::options(),
+            '@accents' => Theme::options(),
             '@timezones' => array_combine(
                 timezone_identifiers_list(),
                 timezone_identifiers_list(),
@@ -299,6 +300,7 @@ class SettingsSchema
             // this shape, so anything else came from somewhere other than the
             // form and is refused rather than written into a stylesheet.
             'color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'swatches' => ['nullable', 'string', 'max:40'],
             // Images are validated by the controller, which knows whether a
             // file was actually uploaded on this request.
             'image' => [],

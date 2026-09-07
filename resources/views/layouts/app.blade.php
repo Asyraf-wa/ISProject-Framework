@@ -73,6 +73,8 @@
 
     <link rel="stylesheet" href="{{ asset('vendor/isproject/isproject.css') }}">
 
+    @include('isproject::partials.accent')
+
     @include('isproject::partials.pwa')
 
     @stack('styles')

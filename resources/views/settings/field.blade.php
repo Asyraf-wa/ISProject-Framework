@@ -58,6 +58,29 @@
             </div>
         @endif
 
+    @elseif ($field['type'] === 'swatches')
+        <span class="form-label d-block">{{ $field['label'] }}</span>
+
+        {{-- Radios, not a select: the whole point is seeing the colour. The
+             measured ratios travel with each one, so the choice is informed
+             rather than decorative. --}}
+        <div class="is-swatches" role="radiogroup" aria-label="{{ $field['label'] }}">
+            @foreach (\IsProject\Framework\Support\Theme::swatches() as $swatch)
+                <label class="is-swatch" style="--is-swatch: {{ $swatch['hex'] }}">
+                    <input type="radio" name="{{ $key }}" value="{{ $swatch['key'] }}"
+                           @checked((string) $current === $swatch['key'])>
+                    <span class="is-swatch-chip" aria-hidden="true"></span>
+                    <span class="is-swatch-name">{{ $swatch['label'] }}</span>
+                    <span class="is-swatch-meta">{{ $swatch['light'] }} / {{ $swatch['dark'] }}</span>
+                </label>
+            @endforeach
+        </div>
+
+        <div class="form-text">
+            Contrast as text, light theme / dark theme. Every option clears the 4.5:1 minimum in
+            both, which is why this is a fixed set rather than a colour picker.
+        </div>
+
     @elseif ($field['type'] === 'color')
         <label class="form-label" for="{{ $key }}">{{ $field['label'] }}</label>
 

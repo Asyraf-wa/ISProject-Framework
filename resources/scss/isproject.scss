@@ -21,6 +21,7 @@
 // 4. Our layer, which may now use Bootstrap's maps, mixins and breakpoints.
 @import "layout";
 @import "components";
+@import "swatches";
 
 // 5. Tom Select, themed with the variables set above. After components so our
 //    control tokens exist, before dark so dark still has the last word.

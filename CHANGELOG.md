@@ -29,6 +29,12 @@ Packagist reads versions from git tags, so every release below has a matching
 - **Installation instructions** in the README for two routes — Docker via Sail,
   and XAMPP / WAMP / Laragon — with a table of the things that actually go
   wrong on each.
+- **Accent colour** in Settings → Appearance: seven presets shown as swatches
+  with their measured contrast, changing buttons, links, the current menu item,
+  checkboxes, focus rings and the first chart series. A fixed set rather than a
+  colour picker because every option is verified to clear 4.5:1 as text, as a
+  white-labelled button, and as its dark tint — which a picker cannot promise.
+  Choosing the default emits no CSS at all.
 
 ### Changed
 

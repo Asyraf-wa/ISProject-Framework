@@ -1,0 +1,73 @@
+// =============================================================================
+// Accent swatches on the settings screen
+//
+// A fixed set of radios rather than a colour input: every option here is
+// measured to clear 4.5:1 in both themes, which a free picker cannot promise.
+// =============================================================================
+.is-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 0.5rem;
+    margin-block-end: 0.25rem;
+}
+
+.is-swatch {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 0.625rem;
+    row-gap: 0;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--is-control-border);
+    border-radius: 0.5rem;
+    background: var(--is-control-bg);
+    cursor: pointer;
+}
+
+// The native control stays in the accessibility tree and keeps arrow-key
+// group behaviour; it is only moved out of sight.
+.is-swatch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.is-swatch-chip {
+    grid-row: span 2;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.5rem;
+    background: var(--is-swatch);
+
+    // An inset line rather than a border, so the chip is still bounded when
+    // the swatch is pale against a white card.
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+}
+
+.is-swatch-name {
+    font-size: 0.84375rem;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--bs-body-color);
+}
+
+.is-swatch-meta {
+    font-size: 0.6875rem;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+    color: var(--bs-secondary-color);
+}
+
+// Two cues, not one: the ring reads at a glance, and using the swatch's own
+// colour for it ties the selection to what was picked.
+.is-swatch:has(input:checked) {
+    border-color: var(--is-swatch);
+    box-shadow: 0 0 0 2px var(--is-swatch);
+}
+
+.is-swatch:has(input:focus-visible) {
+    outline: 2px solid var(--bs-body-color);
+    outline-offset: 2px;
+}

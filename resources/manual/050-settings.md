@@ -25,6 +25,7 @@ screen a lecturer edits is the one that decides.
 
 | Setting | What it changes |
 |---|---|
+| Accent colour | Buttons, links, the current menu item, checkboxes and the first chart series |
 | Brand icon | The mark beside the name when no logo is uploaded |
 | Default theme | Light, dark, or follow the visitor's system — the starting point for somebody who has not chosen |
 | Logo | Replaces the mark and name in the sidebar |
@@ -34,6 +35,11 @@ screen a lecturer edits is the one that decides.
 > Uploads accept PNG, JPEG, WebP and ICO — **never SVG**. An SVG can carry
 > script, and these files are served from your own address, so accepting one
 > would let anybody who can reach this screen run code in everyone's browser.
+
+The accent is a fixed set of seven rather than a colour picker, and each swatch
+shows its contrast in the light and dark themes. Every one is legible in both;
+a picker could not promise that, and the failure would be silent — a colour can
+look excellent and still leave white button text unreadable on it.
 
 ## Sign in
 
