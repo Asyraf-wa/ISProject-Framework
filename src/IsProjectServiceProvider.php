@@ -17,6 +17,7 @@ use IsProject\Framework\Console\CrudMakeCommand;
 use IsProject\Framework\Console\CrudRemoveCommand;
 use IsProject\Framework\Console\InstallCommand;
 use IsProject\Framework\Console\PermissionSyncCommand;
+use IsProject\Framework\Console\UserMakeCommand;
 use IsProject\Framework\Http\Middleware\EnsureGeneratorIsEnabled;
 use IsProject\Framework\Http\Middleware\EnsurePermission;
 use IsProject\Framework\Listeners\LogAuthenticationActivity;
@@ -141,6 +142,7 @@ class IsProjectServiceProvider extends ServiceProvider
         if (config('isproject.activity.enabled', true)) {
             Event::subscribe(LogAuthenticationActivity::class);
         }
+
         $this->applyConfiguredTimezone();
 
         // Registered unconditionally, not only in console: the generator page
@@ -156,6 +158,7 @@ class IsProjectServiceProvider extends ServiceProvider
             AuditPruneCommand::class,
             ArchivableCommand::class,
             ActivityPruneCommand::class,
+            UserMakeCommand::class,
         ]);
 
         if ($this->app->runningInConsole()) {

@@ -15,6 +15,7 @@ summary: Every command in one table, and what to try when something will not beh
 | `isproject:crud-all` | Generates one for every table in the database |
 | `isproject:crud-remove Book` | Deletes the files a module generated. Never the table |
 | `isproject:archivable books` | Writes a migration adding `archived_at` |
+| `isproject:user you@example.com --admin` | Creates or updates an account. `--admin` gives it full access |
 | `isproject:permissions` | Scans the routes and syncs the permission list |
 | `isproject:audit-prune` | Deletes audit entries past the retention period |
 
@@ -29,6 +30,22 @@ Common flags:
 | `--pretend` | audit-prune | Count what would go, delete nothing |
 
 ## Troubleshooting
+
+### Nobody can sign in on a fresh install
+
+Expected — there is no account yet, and the setting that would switch on
+self-registration is itself behind the sign-in. Make one:
+
+```bash
+php artisan isproject:user you@example.com --admin
+```
+
+If it answers that your user model does not use `HasRoles`, add the trait to
+`app/Models/User.php` and run it again:
+
+```php
+use IsProject\Framework\Concerns\HasRoles;
+```
 
 ### "Table not found" when generating
 

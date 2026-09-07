@@ -22,7 +22,128 @@ php artisan isproject:crud Product
 
 ## Installing
 
-Requires **PHP 8.3+** and **Laravel 12 or 13**.
+You need **PHP 8.3 or newer**, **Composer**, and a database. Pick whichever of
+the two routes below matches what is already on your machine — they end at the
+same place, and the [common steps](#common-steps-both-routes) after them are
+identical.
+
+> **There is no npm step.** `resources/dist` ships compiled, so this runs on a
+> machine that has never had Node installed.
+
+---
+
+### Route 1 — Docker
+
+Nothing to install but Docker Desktop. No PHP, no Composer, no MySQL on your
+own machine, and nothing left behind when you delete the folder.
+
+**1. Create the application.** This scaffolds a Laravel project using a
+throwaway container, so it works even with no PHP installed:
+
+```bash
+curl -s "https://laravel.build/myapp" | bash
+cd myapp
+```
+
+On Windows, run that inside **WSL2** (Ubuntu), not PowerShell.
+
+**2. Start the containers.**
+
+```bash
+./vendor/bin/sail up -d
+```
+
+The first run downloads images and takes a few minutes. Afterwards the site is
+at **http://localhost** and MySQL is already configured — Sail writes the right
+`DB_` values into `.env` for you.
+
+**3. Run every later command through Sail**, which runs it inside the container
+where PHP 8.3+ lives:
+
+```bash
+./vendor/bin/sail php artisan migrate
+./vendor/bin/sail composer require isproject/framework
+```
+
+> [!TIP]
+> `alias sail='./vendor/bin/sail'` saves a lot of typing. Then it is just
+> `sail artisan migrate`.
+
+Now skip to the [common steps](#common-steps-both-routes).
+
+---
+
+### Route 2 — XAMPP, WAMP or Laragon
+
+Familiar if you have built PHP sites before. The one thing that catches people
+out is the PHP version, so check it first.
+
+**1. Check your PHP version — this is the usual blocker.**
+
+```bash
+php -v
+```
+
+You need **8.3 or newer**. If the command is not found at all, PHP is installed
+but not on your PATH:
+
+| Stack | Where PHP lives | Fix |
+|---|---|---|
+| **Laragon** | `C:\laragon\bin\php\php-8.x\` | Menu → PHP → Version to switch. Laragon puts it on PATH for its own terminal |
+| **XAMPP** | `C:\xampp\php\` | Add that folder to the Windows PATH, or use XAMPP's shell |
+| **WAMP** | `C:\wamp64\bin\php\php8.x\` | Left-click the tray icon → PHP → Version |
+
+If yours is older than 8.3: Laragon and WAMP can download and switch versions
+from their menus. XAMPP cannot — install a newer XAMPP alongside, or move to
+Route 1.
+
+**2. Install Composer** from [getcomposer.org](https://getcomposer.org/download/)
+if `composer -V` does not answer. The Windows installer will ask which `php.exe`
+to use — point it at the 8.3+ one you just checked.
+
+**3. Create the database.** Start Apache and MySQL in your control panel, open
+**phpMyAdmin** at `http://localhost/phpmyadmin`, and create an empty database
+called `myapp` with collation `utf8mb4_unicode_ci`.
+
+**4. Create the application** in your web root — `C:\laragon\www`,
+`C:\xampp\htdocs` or `C:\wamp64\www`:
+
+```bash
+composer create-project laravel/laravel myapp
+cd myapp
+```
+
+**5. Point it at your database.** Edit `.env`:
+
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=myapp
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+XAMPP and Laragon use an empty root password by default; WAMP too. If you set
+one, put it here.
+
+**6. Serve it.**
+
+```bash
+php artisan serve
+```
+
+That runs at **http://localhost:8000** and is the simplest option — no virtual
+host to configure. Laragon users can instead visit `http://myapp.test`, which it
+creates automatically; the important part is that the document root points at
+the **`public`** folder, never the project root.
+
+---
+
+### Common steps (both routes)
+
+From inside the project, with `sail` in front of each command if you took
+Route 1:
 
 ```bash
 composer require isproject/framework
@@ -31,15 +152,50 @@ php artisan migrate
 php artisan storage:link
 ```
 
-`isproject:install` publishes the config and the compiled assets. Add `--views`
-to publish the layout and partials for editing, `--stubs` to reshape what the
-generator writes, or `--all` for both.
+Then add one line to `app/Models/User.php` so accounts can hold roles:
 
-`storage:link` is what makes uploaded logos, favicons and profile photos
-visible; without it they upload successfully and never appear.
+```php
+use IsProject\Framework\Concerns\HasRoles;
 
-That is the whole installation. There is no npm step — `resources/dist` ships
-compiled, so the framework runs on a machine that has never seen Node.
+class User extends Authenticatable
+{
+    use HasFactory, HasRoles, Notifiable;
+}
+```
+
+And create the account you will sign in with:
+
+```bash
+php artisan isproject:user you@example.com --admin
+```
+
+It asks for a name and password, and `--admin` gives it a super admin role —
+full access to everything. **This step is not optional:** a fresh install has
+nobody who can sign in, and the settings screen that would switch on
+self-registration is itself behind the sign-in.
+
+Visit **`/login`**, and you are in.
+
+| Command | What it did |
+|---|---|
+| `isproject:install` | Published the config and the compiled CSS and JS. `--views` also copies the layout out for editing, `--stubs` the generator templates, `--all` both |
+| `migrate` | Created the framework's own tables — settings, roles, audit, activity, menu |
+| `storage:link` | Made uploads reachable. **Without it, logos and profile photos save successfully and never appear** |
+| `isproject:user` | Created your first account |
+
+---
+
+### When it does not work
+
+| What you see | Why | Fix |
+|---|---|---|
+| `requires php ^8.3` from Composer | Composer is using an older PHP | `php -v`, then switch versions in your stack's menu |
+| `could not find driver` | The database extension is off | Uncomment `extension=pdo_mysql` in `php.ini` and restart Apache |
+| `SQLSTATE[HY000] [1049] Unknown database` | The database does not exist yet | Create it in phpMyAdmin — step 3 above |
+| `Connection refused` on Route 1 | Containers are not up | `./vendor/bin/sail up -d` |
+| Logo and photos never appear | The storage link is missing | `php artisan storage:link`. On Windows this needs **Developer Mode** on, or an administrator terminal — Windows restricts symlinks |
+| A blank page, or "Not Found" | The document root points at the project, not `public/` | Use `php artisan serve`, or fix the vhost |
+| Changes to `.env` do nothing | Config is cached | `php artisan optimize:clear` |
 
 > **Version policy.** This is 0.x: the config file, the stub tokens and the
 > shape of the generated code may still change. Pin with `^0.1` and read

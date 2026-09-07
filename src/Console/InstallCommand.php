@@ -44,7 +44,10 @@ class InstallCommand extends Command
             'Create the tables:   php artisan migrate',
             'Serve the uploads:   php artisan storage:link   (needed for the logo and favicon)',
             'Give User roles:     use IsProject\Framework\Concerns\HasRoles; in app/Models/User.php',
-            'Build the matrix:    php artisan isproject:permissions --admin=Administrator --user=you@example.com',
+            // Before the matrix, not after: isproject:permissions --user= needs
+            // an account that already exists, and a fresh install has none.
+            'Create your login:   php artisan isproject:user you@example.com --admin',
+            'Build the matrix:    php artisan isproject:permissions',
             'Name your system:    visit /settings',
             'Write a migration:   php artisan make:migration create_products_table',
             'Generate the CRUD:   php artisan isproject:crud Product',

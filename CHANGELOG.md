@@ -22,6 +22,13 @@ Packagist reads versions from git tags, so every release below has a matching
   light and dark themes.
 - **Split sign-in screen** — a showcase panel beside the form, shared by sign in,
   register and password reset. Turn it off with `isproject.landing.enabled`.
+- **`isproject:user`** creates the first account, optionally as a super admin.
+  Without it a fresh install had nobody who could sign in and no supported way
+  to make anybody: the setting that enables self-registration is itself behind
+  the sign-in, so the only route was a `tinker` one-liner.
+- **Installation instructions** in the README for two routes — Docker via Sail,
+  and XAMPP / WAMP / Laragon — with a table of the things that actually go
+  wrong on each.
 
 ### Changed
 
