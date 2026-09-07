@@ -318,6 +318,21 @@ class ProgressiveWebAppTest extends TestCase
     }
 
     #[Test]
+    public function both_spellings_of_the_standalone_meta_are_present(): void
+    {
+        $this->enable();
+
+        // Chrome deprecated the apple- prefixed name and warns for the standard
+        // one; iOS Safari only understands the prefixed one. Dropping either
+        // costs one platform something real.
+        $this->actingAs($this->user())
+            ->get('/settings')
+            ->assertOk()
+            ->assertSee('name="mobile-web-app-capable"', false)
+            ->assertSee('name="apple-mobile-web-app-capable"', false);
+    }
+
+    #[Test]
     public function the_layout_cleans_up_after_itself_when_it_is_switched_off(): void
     {
         $response = $this->actingAs($this->user())->get('/settings');

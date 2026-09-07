@@ -11,8 +11,16 @@
     <link rel="manifest" href="{{ route('isproject.pwa.manifest') }}">
     <meta name="theme-color" content="{{ $isPwa->themeColor() }}">
 
-    {{-- Safari reads none of the manifest: on iOS the home screen icon, the
-         title and the standalone behaviour all come from these instead. --}}
+    {{-- Both spellings, and both are needed.
+
+         Chrome has deprecated its support for the apple- prefixed name and
+         warns in the console asking for the standard one. iOS Safari only
+         understands the prefixed one, and dropping it would cost every iPhone
+         the standalone behaviour to silence a warning on Android.
+
+         The other two have no standard equivalent: on iOS the home screen
+         title and status bar still come from these. --}}
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="{{ $isPwa->shortName() }}">
