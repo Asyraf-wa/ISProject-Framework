@@ -196,6 +196,7 @@ Visit **`/login`**, and you are in.
 | Logo and photos never appear | The storage link is missing | `php artisan storage:link`. On Windows this needs **Developer Mode** on, or an administrator terminal — Windows restricts symlinks |
 | A blank page, or "Not Found" | The document root points at the project, not `public/` | Use `php artisan serve`, or fix the vhost |
 | Changes to `.env` do nothing | Config is cached | `php artisan optimize:clear` |
+| New styling only shows after a hard reload | The published assets were re-published but not re-read | Should not happen — every asset URL carries a `?v=` from the file. If it does, `php artisan vendor:publish --tag=isproject-assets --force` then `optimize:clear`, so the version is recalculated |
 
 > **Version policy.** This is 0.x: the config file, the stub tokens and the
 > shape of the generated code may still change. Pin with `^0.1` and read

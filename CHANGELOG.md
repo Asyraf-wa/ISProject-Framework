@@ -48,6 +48,18 @@ Packagist reads versions from git tags, so every release below has a matching
 
 ### Fixed
 
+- **Published assets are versioned.** The stylesheet and scripts sit at a fixed
+  path, so re-publishing after an upgrade changed the bytes without changing the
+  URL — and because static files carried no `Cache-Control`, browsers applied
+  *heuristic* freshness and served the old copy without even revalidating. The
+  symptom was styling that only appeared after a hard reload. Every published
+  asset now carries a `?v=` derived from the file, `isproject_asset()` builds
+  those URLs, and the dev nginx config sets an explicit immutable year, which
+  the versioning makes safe.
+- The service worker had the same bug one layer down: it precached those paths
+  cache-first, so an installed app would have served the old stylesheet
+  indefinitely. Its precache list is versioned too.
+
 - Brand indigo used as text measured 1.8–2.4:1 on dark panels — below the 4.5:1
   WCAG minimum — on the manual cards, avatar initials, menu icons and the
   searchable-dropdown highlight. All now use a theme-aware accent token and

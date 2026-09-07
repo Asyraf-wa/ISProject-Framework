@@ -251,8 +251,11 @@ class Pwa
     {
         $paths = [$this->pathOf(route('isproject.pwa.offline'))];
 
+        // Versioned, and deliberately so: the worker caches these first-hand,
+        // so a path that never changes would have an installed app serving the
+        // old stylesheet long after a browser had given up on it.
         foreach (['isproject.css', 'isproject.js', 'bootstrap.bundle.min.js'] as $file) {
-            $paths[] = $this->pathOf(asset('vendor/isproject/'.$file));
+            $paths[] = app(Assets::class)->path($file);
         }
 
         if ($icon = $this->icon()) {

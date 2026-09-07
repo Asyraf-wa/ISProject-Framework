@@ -3,6 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use IsProject\Framework\Models\Activity;
 use IsProject\Framework\Support\ActivityLogger;
+use IsProject\Framework\Support\Assets;
 use IsProject\Framework\Support\Settings;
 
 if (! function_exists('isproject_setting')) {
@@ -22,6 +23,22 @@ if (! function_exists('isproject_setting')) {
         $settings = app(Settings::class);
 
         return $key === null ? $settings : $settings->get($key, $default);
+    }
+}
+
+if (! function_exists('isproject_asset')) {
+    /**
+     * URL for a published asset, with a version derived from the file.
+     *
+     *     <link rel="stylesheet" href="{{ isproject_asset('isproject.css') }}">
+     *
+     * Without the version, re-publishing after an upgrade changes the bytes but
+     * not the URL, and browsers go on serving the copy they already have —
+     * which is the "it only updates on a hard reload" bug.
+     */
+    function isproject_asset(string $file): string
+    {
+        return app(Assets::class)->url($file);
     }
 }
 

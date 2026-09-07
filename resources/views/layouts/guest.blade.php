@@ -46,7 +46,7 @@
         })();
     </script>
 
-    <link rel="stylesheet" href="{{ asset('vendor/isproject/isproject.css') }}">
+    <link rel="stylesheet" href="{{ isproject_asset('isproject.css') }}">
 
     @include('isproject::partials.accent')
 
@@ -152,13 +152,13 @@
     </div>
 </div>
 
-<script src="{{ asset('vendor/isproject/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ isproject_asset('bootstrap.bundle.min.js') }}"></script>
 
 @if (config('isproject.select.enabled', true))
-    <script src="{{ asset('vendor/isproject/tom-select.min.js') }}"></script>
+    <script src="{{ isproject_asset('tom-select.min.js') }}"></script>
 @endif
 
-<script src="{{ asset('vendor/isproject/isproject.js') }}"></script>
+<script src="{{ isproject_asset('isproject.js') }}"></script>
 @stack('scripts')
 </body>
 </html>

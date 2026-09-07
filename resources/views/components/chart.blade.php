@@ -19,7 +19,7 @@
 
 @once
     @push('scripts')
-        <script src="{{ asset('vendor/isproject/echarts.min.js') }}"></script>
+        <script src="{{ isproject_asset('echarts.min.js') }}"></script>
     @endpush
 @endonce
 
