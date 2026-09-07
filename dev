@@ -2,9 +2,9 @@
 #
 # Run artisan inside the sandbox application.
 #
-#   ./art migrate
-#   ./art isproject:crud Product
-#   ./art isproject:crud-all --force
+#   ./dev migrate
+#   ./dev isproject:crud Product
+#   ./dev isproject:crud-all --force
 #
 # Anything that is not an artisan command still works through:
 #   docker compose exec -w /var/www/sandbox app <command>

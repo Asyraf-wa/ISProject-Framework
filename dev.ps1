@@ -1,7 +1,7 @@
 # Run artisan inside the sandbox application, from Windows PowerShell.
 #
-#   .\art.ps1 migrate
-#   .\art.ps1 isproject:crud Product
-#   .\art.ps1 isproject:crud-all --force
+#   .\dev.ps1 migrate
+#   .\dev.ps1 isproject:crud Product
+#   .\dev.ps1 isproject:crud-all --force
 
 docker compose exec -w /var/www/sandbox app php artisan @args

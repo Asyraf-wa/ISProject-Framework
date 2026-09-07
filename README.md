@@ -97,9 +97,9 @@ Run artisan through the wrapper so you do not have to remember the working
 directory:
 
 ```bash
-./art migrate                     # ./art.ps1 on Windows PowerShell
-./art isproject:crud Product
-./art isproject:crud-all --force
+./dev migrate                     # ./dev.ps1 on Windows PowerShell
+./dev isproject:crud Product
+./dev isproject:crud-all --force
 ```
 
 Front-end assets are opt-in, once the sandbox has a `package.json`:

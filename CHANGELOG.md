@@ -29,8 +29,9 @@ Packagist reads versions from git tags, so every release below has a matching
   the wording throughout addresses **developers** rather than students.
 - The seeded administrator is `admin@example.test` (was `lecturer@example.test`).
   The password is unchanged.
-- `art` and `docker/bin/init-sandbox.sh` are now executable. They were committed
-  without the bit, so the documented `./art` command failed on a fresh clone.
+- The artisan wrapper is now `./dev` (`.\dev.ps1` on Windows), renamed from
+  `art`. It is also executable, which it was not before — so the command the
+  README documented failed on a fresh clone.
 
 ### Fixed
 

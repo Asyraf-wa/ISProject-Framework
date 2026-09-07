@@ -1,6 +1,6 @@
 # Shell scripts must keep LF endings or they will not run inside the container.
 *.sh text eol=lf
-art  text eol=lf
+dev  text eol=lf
 
 *.php   text eol=lf
 *.stub  text eol=lf
@@ -10,7 +10,7 @@ art  text eol=lf
 *.md    text eol=lf
 *.conf  text eol=lf
 
-art.ps1 text eol=crlf
+dev.ps1 text eol=crlf
 
 # Keep the repository slim when installed as a Composer dependency. None of
 # this is needed to run the package — only to develop it.
@@ -20,8 +20,8 @@ art.ps1 text eol=crlf
 /.github        export-ignore
 docker-compose.yml export-ignore
 .env.example    export-ignore
-art             export-ignore
-art.ps1         export-ignore
+dev             export-ignore
+dev.ps1         export-ignore
 .editorconfig   export-ignore
 .gitattributes  export-ignore
 .gitignore      export-ignore
