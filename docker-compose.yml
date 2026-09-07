@@ -1,13 +1,13 @@
 # Development environment for the isproject/framework package.
 #
-# The repository is mounted at /var/www. The Laravel application used to
-# exercise the package lives in ./playground (git-ignored) and is linked back
-# to the package with a Composer path repository, so an edit in src/ or stubs/
-# is live in the app immediately — no re-publishing, no cache clearing.
+# The repository is mounted at /var/www. The Laravel application the package is
+# developed against lives in ./sandbox (git-ignored) and is linked back to the
+# package with a Composer path repository, so an edit in src/ or stubs/ is live
+# in the app immediately — no re-publishing, no cache clearing.
 #
 #   cp .env.example .env
 #   docker compose up -d --build
-#   docker compose exec app bash /var/www/docker/bin/init-playground.sh --demo
+#   docker compose exec app bash /var/www/docker/bin/init-sandbox.sh --demo
 #   open http://localhost:${APP_PORT:-8080}
 #
 # Afterwards, run artisan through the ./art wrapper (./art.ps1 on Windows):
@@ -23,7 +23,7 @@ services:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
     image: isproject/php:8.4
-    # /var/www, not /var/www/playground: the playground does not exist on a
+    # /var/www, not /var/www/sandbox: the sandbox does not exist on a
     # fresh clone, and Docker would create it root-owned inside the bind mount.
     working_dir: /var/www
     volumes:
@@ -112,13 +112,13 @@ services:
     ports:
       - "${MAILPIT_PORT:-8025}:8025"
 
-  # Vite dev server. Opt in once the playground has a package.json:
+  # Vite dev server. Opt in once the sandbox has a package.json:
   #   docker compose --profile assets up -d
   node:
     image: node:22-alpine
     profiles: ["assets"]
     working_dir: /var/www
-    command: sh -c "cd playground && npm install && npm run dev -- --host 0.0.0.0"
+    command: sh -c "cd sandbox && npm install && npm run dev -- --host 0.0.0.0"
     ports:
       - "${VITE_PORT:-5173}:5173"
     volumes:

@@ -1,6 +1,7 @@
-# The throwaway Laravel app used to exercise the package. It is a full Laravel
-# install with its own vendor/, .env and database — none of it belongs here.
-/playground
+# The Laravel application this package is developed against. It is a complete
+# install with its own vendor/, .env and database, rebuilt from
+# docker/bin/init-sandbox.sh — none of it belongs in the package repository.
+/sandbox
 
 # Dependencies, both ecosystems.
 /vendor

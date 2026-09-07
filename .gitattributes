@@ -14,7 +14,7 @@ art.ps1 text eol=crlf
 
 # Keep the repository slim when installed as a Composer dependency. None of
 # this is needed to run the package — only to develop it.
-/playground     export-ignore
+/sandbox        export-ignore
 /tests          export-ignore
 /docker         export-ignore
 /.github        export-ignore

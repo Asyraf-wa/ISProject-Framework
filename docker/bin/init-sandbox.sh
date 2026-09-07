@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# Creates ./playground — a real Laravel application that consumes this package
+# Creates ./sandbox — a real Laravel application that consumes this package
 # through a Composer path repository, so editing src/ or stubs/ is immediately
 # reflected in the running app.
 #
-#   docker compose exec app bash /var/www/docker/bin/init-playground.sh
-#   docker compose exec app bash /var/www/docker/bin/init-playground.sh --demo
+#   docker compose exec app bash /var/www/docker/bin/init-sandbox.sh
+#   docker compose exec app bash /var/www/docker/bin/init-sandbox.sh --demo
 #
 # --demo also creates categories/products tables and generates CRUD for them,
 # which is the fastest way to see the generator working end to end.
@@ -13,14 +13,14 @@
 set -euo pipefail
 
 ROOT=/var/www
-APP="$ROOT/playground"
+APP="$ROOT/sandbox"
 DEMO=false
 
 for arg in "$@"; do
     [ "$arg" = "--demo" ] && DEMO=true
 done
 
-# Set (or replace) a key in the playground .env, whether or not it is commented.
+# Set (or replace) a key in the sandbox .env, whether or not it is commented.
 set_env() {
     local key="$1" value="$2" file="$APP/.env"
     sed -i "/^#\? \?${key}=/d" "$file"
@@ -32,11 +32,11 @@ set_env() {
 CREATED=false
 
 if [ ! -f "$APP/artisan" ]; then
-    echo "==> Creating a fresh Laravel application in ./playground"
+    echo "==> Creating a fresh Laravel application in ./sandbox"
     composer create-project laravel/laravel "$APP" --no-interaction
     CREATED=true
 else
-    echo "==> ./playground already exists, reusing it"
+    echo "==> ./sandbox already exists, reusing it"
 fi
 
 cd "$APP"
@@ -114,8 +114,8 @@ fi
 # ---------------------------------------------------------------- database
 
 if [ "$CREATED" = true ]; then
-    # A brand-new playground owns the schema. Dropping first keeps re-runs
-    # repeatable when ./playground was deleted but the database volume kept.
+    # A brand-new sandbox owns the schema. Dropping first keeps re-runs
+    # repeatable when ./sandbox was deleted but the database volume kept.
     echo "==> Preparing a clean schema"
     php artisan migrate:fresh --force
 else
@@ -125,7 +125,7 @@ fi
 
 echo "==> Publishing the framework assets and config"
 # Views and stubs stay unpublished: a published copy is a frozen snapshot, and
-# the playground exists to exercise the package as you edit it. Config is the
+# the sandbox exists to exercise the package as you edit it. Config is the
 # exception — the sidebar menu lives there and the demo below edits it — so it
 # is re-published with --force on every run to stay in step with the package.
 php artisan isproject:install --force
@@ -242,7 +242,7 @@ php artisan tinker --execute="
 # ---------------------------------------------------------------------- rbac
 
 # The trait is what gives the application's own User model roles. Added here
-# rather than left as a manual step, so the playground has working RBAC out of
+# rather than left as a manual step, so the sandbox has working RBAC out of
 # the box; a real project does the same edit once by hand.
 if ! grep -q 'HasRoles' app/Models/User.php; then
     echo "==> Adding HasRoles to App\\Models\\User"

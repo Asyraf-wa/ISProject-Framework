@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# Run artisan inside the playground application.
+# Run artisan inside the sandbox application.
 #
 #   ./art migrate
 #   ./art isproject:crud Product
 #   ./art isproject:crud-all --force
 #
 # Anything that is not an artisan command still works through:
-#   docker compose exec -w /var/www/playground app <command>
+#   docker compose exec -w /var/www/sandbox app <command>
 
-exec docker compose exec -w /var/www/playground app php artisan "$@"
+exec docker compose exec -w /var/www/sandbox app php artisan "$@"

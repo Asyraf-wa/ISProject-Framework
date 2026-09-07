@@ -65,10 +65,10 @@ Requires Docker. Nothing else — not even PHP on the host.
 ```bash
 cp .env.example .env          # set UID/GID to match `id -u` / `id -g`
 docker compose up -d --build
-docker compose exec app bash /var/www/docker/bin/init-playground.sh --demo
+docker compose exec app bash /var/www/docker/bin/init-sandbox.sh --demo
 ```
 
-That last command creates `./playground` — a real Laravel application that
+That last command creates `./sandbox` — a real Laravel application that
 consumes this package through a Composer **path repository with symlinks**. An
 edit to `src/` or `stubs/` is live in the app immediately; there is nothing to
 republish and no cache to clear.
@@ -102,7 +102,7 @@ directory:
 ./art isproject:crud-all --force
 ```
 
-Front-end assets are opt-in, once the playground has a `package.json`:
+Front-end assets are opt-in, once the sandbox has a `package.json`:
 
 ```bash
 docker compose --profile assets up -d
@@ -316,7 +316,7 @@ Two things are switched on from **`/settings` → Sign in**, not from code:
 
 #### Google sign-in
 
-Two values in your **application's** `.env` — `playground/.env` in the dev
+Two values in your **application's** `.env` — `sandbox/.env` in the dev
 environment above, not the `.env` at the root of this repo, which configures
 Docker. Nothing else; no `composer require`:
 
